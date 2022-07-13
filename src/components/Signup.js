@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react"
 import { Form, Button, Card, Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link, useNavigate } from "react-router-dom"
+import { db } from "../firebase"
+import { setDoc,  doc} from "firebase/firestore"
 
 
 export default function Signup() {
@@ -9,6 +11,8 @@ export default function Signup() {
     const emailRef = useRef()
     const passwordRef = useRef()
     const passwordConfirmRef = useRef()
+    const firstNameRef = useRef()
+    const lastNameRef = useRef()
     const { signup } = useAuth()
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
@@ -25,8 +29,14 @@ export default function Signup() {
         try {
           setError("")
           setLoading(true)
-          await signup(emailRef.current.value, passwordRef.current.value)
-          navigate("/")
+          await signup(emailRef.current.value, passwordRef.current.value).then(cred => {
+            return setDoc(doc(db, "user", cred.user.uid), {
+              firstname: firstNameRef.current.value,
+              lastname: lastNameRef.current.value,
+              email: emailRef.current.value,
+            });
+          }) 
+          navigate("/")         
         } catch {
           setError("Failed to create an account")
          }
@@ -42,6 +52,14 @@ export default function Signup() {
             <h2 className="text-center mb-4">Sign Up</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
+                <Form.Group id="firstname">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control type="firstname" ref={firstNameRef} required />
+                </Form.Group>
+                <Form.Group id="lastname">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control type="lastname" ref={lastNameRef} required />
+                </Form.Group>
                 <Form.Group id="email">
                 <Form.Label>Email</Form.Label>
                 <Form.Control type="email" ref={emailRef} required />
