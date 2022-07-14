@@ -17,6 +17,13 @@ export default function Dashboard() {
     const navigate = useNavigate()
     const [taskData, setTaskData] = useState([])
     const [users, setUsers] = useState([])
+    const [assignedUsers, setAssignedUsers] = useState([])
+
+    useEffect(() => {
+      getData()
+      getUsers()
+      // eslint-disable-next-line
+    }, [])
 
     async function getData() {
       const querySnapshot = await getDocs(collection(db, "user/" + currentUser.uid + "/tasks"));
@@ -27,7 +34,8 @@ export default function Dashboard() {
           task_uid: doc.id,
           task_title: data.task_title, 
           task_description: data.task_description, 
-          task_requirements: data.task_requirements
+          task_requirements: data.task_requirements,
+          task_assignedUsers: data.task_assignedUsers
         }])
       });
     };
@@ -38,20 +46,25 @@ export default function Dashboard() {
         const data = doc.data()
         setUsers(prevState => [...prevState, 
           {
-          user_uid: doc.id,
-          user_firstname: data.firstname, 
-          user_lastname: data.lastname, 
-          user_email: data.email,
+          id: doc.id,
+          firstname: data.firstname, 
+          lastname: data.lastname, 
+          email: data.email,
         }])
       });
     };
 
-    useEffect(() => {
+    
 
-      getData()
-      getUsers()
-      // eslint-disable-next-line
-    }, [])
+    const assignUserForTask = async (id, firstname, lastname, email) => {
+      setAssignedUsers(prevState => [...prevState,  {
+        id: id,
+        firstname: firstname,
+        lastname: lastname,
+        email: email
+      }])
+      
+    }
 
     async function deleteTask(id) {
       try {
@@ -76,6 +89,7 @@ export default function Dashboard() {
             task_title: taskTitleRef.current.value,
             task_description: taskDescriptionRef.current.value,
             task_requirements: taskRequirementsRef.current.value,
+            task_assignedUsers: assignedUsers,
             creator: currentUser.uid
         })
         navigate(0)
@@ -112,11 +126,18 @@ export default function Dashboard() {
                   <Form.Control type="requirements" ref={taskRequirementsRef} required />
                 </Form.Group>
                 <DropdownButton className="mt-4" id="dropdown-basic-button" title="Assign">
-                {users.map((el) => {
+                {users.map((user) => {
                   return (
-                  <Dropdown.Item>{el.user_firstname + " " + el.user_lastname + ` ( ${el.user_email} )`}</Dropdown.Item>)
+                  <Dropdown.Item onClick={() => {assignUserForTask(user.id,user.firstname,user.lastname,user.email)}}>{user.firstname + " " + user.lastname + ` ( ${user.email} )`}</Dropdown.Item>)
                 })}
                 </DropdownButton>
+                <div className="mt-4">
+                  {assignedUsers.map((assignedUser, index)  => {
+                    return (
+                      <p key={index}>{assignedUser.firstname + " " + assignedUser.lastname + " " + `(${assignedUser.email})`}</p>
+                    )
+                  })}
+                </div>
                 {/* <Form.Group id="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password"  required />
@@ -129,25 +150,34 @@ export default function Dashboard() {
                 Create Task
                 </Button>
             </Form>
-        </div>
-        <div className="flex w-75 text-center mx-auto">
-        {taskData.map((el) => {
-                  return (
-                    <Card className="mt-4 mb-4 w-100">
-                      <Card.Header><Card.Title className="mt-2">{el.task_title}</Card.Title></Card.Header>
-                        <Card.Body>
-                          <Card.Text>{el.task_description}</Card.Text>
-                          <Card.Text>Requirements:
-                          {" " + el.task_requirements}
-                          </Card.Text>
-                        </Card.Body>
-                        <Button disabled={loading} onClick={() => {
-                          deleteTask(el.task_uid)
-                        }} className="mx-auto w-25 mb-2">Delete Task</Button>
-                    </Card>)
-                })
-                }
-        </div>
+            </div>
+            <div className="flex w-75 text-center mx-auto">
+            {taskData.map((el, elIdx) => {
+                      return (
+                        <Card className="mt-4 mb-4 w-100">
+                          <Card.Header><Card.Title className="mt-2">{el.task_title}</Card.Title></Card.Header>
+                            <Card.Body>
+                              <Card.Text>{el.task_description}</Card.Text>
+                              <Card.Text>Requirements:
+                              {" " + el.task_requirements}
+                              </Card.Text>
+                              Assigned Users: 
+                              <ul>
+                              {" " + el.task_assignedUsers.map((user) => {
+                                return(
+                                  " " + user.email
+                                )
+                              })}
+                              </ul>
+                              
+                            </Card.Body>
+                            <Button disabled={loading} onClick={() => {
+                              deleteTask(el.task_uid)
+                            }} className="mx-auto w-25 mb-2">Delete Task</Button>
+                        </Card>)
+                    })
+                    }
+            </div>
     </>
   )
 }

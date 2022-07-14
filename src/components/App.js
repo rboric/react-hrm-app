@@ -1,5 +1,6 @@
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
+import Overview from "./Overview";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute"
 import ForgotPassword from "./ForgotPassword"
@@ -19,6 +20,7 @@ function App() {
           <AuthProvider>
             <Routes>
               <Route exact path="/" element={<PrivateRoute><NavbarComp></NavbarComp><Dashboard></Dashboard></PrivateRoute>}/>
+              <Route path="/overview" element={<PrivateRoute><NavbarComp></NavbarComp><Overview></Overview></PrivateRoute>}/>
               <Route path="/signup" element={<Signup/>}/>
               <Route path="/login" element={<Login/>}/>
               <Route path="/forgot-password" element={<ForgotPassword/>}/>
