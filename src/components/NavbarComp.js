@@ -14,14 +14,14 @@ export default function NavbarComp() {
 
         try {
             await logout()
-            navigate("/login")
+            navigate("/login-admin")
         } catch {
             setError("Failed to log out")
         }
     }
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="info">
+    <Navbar collapseOnSelect expand="lg" className='bg-main-light-t'>
       <Container>
       {error && <Alert variant="danger">{error}</Alert>}
       <Navbar.Brand href="#home"><img src={require("../assets/logo.png")} alt="LOGO" height="40px" /></Navbar.Brand>
@@ -31,7 +31,7 @@ export default function NavbarComp() {
         </Nav>
         <Nav>
           <Nav.Link className="disabled">Logged in as {currentUser.email}</Nav.Link>
-          <Link to="/">Dashboard </Link>
+          <Link to="/dashboard">Dashboard </Link>
           <Link to="/overview">Overview</Link>
           <Nav.Link onClick={handleLogout}>
           Log Out

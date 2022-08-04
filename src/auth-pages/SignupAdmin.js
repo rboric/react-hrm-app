@@ -13,11 +13,13 @@ export default function Signup() {
     const passwordConfirmRef = useRef()
     const firstNameRef = useRef()
     const lastNameRef = useRef()
+    const firmNameRef = useRef()
+    const firmCodeRef = useRef()
     const { signup } = useAuth()
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
-
+    const randomNumber = Math.floor(Math.random() * 1000001);
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -25,25 +27,38 @@ export default function Signup() {
         if (passwordRef.current.value !== passwordConfirmRef.current.value) {
           return setError("Passwords do not match")
         }
-    
+        
         try {
+          
           setError("")
           setLoading(true)
-          await signup(emailRef.current.value, passwordRef.current.value).then(cred => {
-            return setDoc(doc(db, "user", cred.user.uid), {
+          await signup(emailRef.current.value, passwordRef.current.value).then((cred) => {
+            return setDoc(doc(db, "firm/" + randomNumber + "/admin", cred.user.uid), {
               firstname: firstNameRef.current.value,
               lastname: lastNameRef.current.value,
               email: emailRef.current.value,
             });
-          }) 
-          navigate("/")         
-        } catch {
-          setError("Failed to create an account")
+          })
+          alert("Your firm number is: " + randomNumber)      
+        } catch(e) {
+          setError(e)
          }
        
     
         setLoading(false)
       }
+    async function setFirmName() {
+      console.log(firmCodeRef.current.value)
+      try {
+        await setDoc(doc(db, "firm/", firmCodeRef.current.value), {
+          name: firmNameRef.current.value
+        })
+        navigate("/login-admin")
+      } catch {
+        console.error(error)
+       }
+      
+    }
 
   return (
     <>
@@ -65,21 +80,32 @@ export default function Signup() {
                 <Form.Control type="email" ref={emailRef} required />
                 </Form.Group>
                 <Form.Group id="password">
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Password</Form.Label> 
                 <Form.Control type="password" ref={passwordRef} required />
                 </Form.Group>
                 <Form.Group id="password-confirm">
                 <Form.Label>Password Confirmation</Form.Label>
                 <Form.Control type="password" ref={passwordConfirmRef} required />
                 </Form.Group>
+                <Form.Group id="firmname">
+                <Form.Label>Firm Name</Form.Label>
+                <Form.Control type="text" ref={firmNameRef}  />
+                </Form.Group>
+                <Form.Group id="firmcode">
+                <Form.Label>Firm Code</Form.Label>
+                <Form.Control type="text" ref={firmCodeRef}  />
+                </Form.Group>
                 <Button disabled={loading} className="w-100 mt-4" type="submit">
                 Sign Up
+                </Button>
+                <Button className="w-100 mt-4" onClick={setFirmName}>
+                SET FIRM NAME
                 </Button>
             </Form>
         </Card.Body>
          </Card>
         <div className='w-100 text-center mt-2'>
-            Already have an account? <Link to="/login">Log In</Link>
+            Already have an account? <Link to="/login-admin">Log In</Link>
         </div>
     </>
   )

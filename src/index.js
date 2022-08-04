@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './components/App';
+import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import "./custom.css"
 import "bootstrap/dist/css/bootstrap.min.css"
 import { AuthProvider } from './contexts/AuthContext';
 

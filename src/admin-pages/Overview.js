@@ -8,7 +8,7 @@ export default function Overview() {
     let counter = 0;
 
     async function getUsers() {
-        const querySnapshot = await getDocs(collection(db, "user"));
+        const querySnapshot = await getDocs(collection(db, "admin"));
         querySnapshot.forEach((doc) => {
           const data = doc.data()
           setUsers(prevState => [...prevState, 
@@ -50,6 +50,6 @@ export default function Overview() {
              })}
                 
             </tbody>
-            </Table>
+    </Table>
   )
 }

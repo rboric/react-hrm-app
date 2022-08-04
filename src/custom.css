@@ -1,0 +1,89 @@
+:root {
+    --main: #f79902;
+    --main-light: #f7bb61;
+    --main-light-transparent: #f7990250;
+    --transition: 0.2s;
+
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+::-webkit-scrollbar {
+    display: none;
+  }
+
+* {
+    box-shadow: none !important;
+    font-family: 'Roboto', sans-serif;
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+
+.text-white {
+    color: white !important;
+    transition: var(--transition) !important
+}
+
+.text-main {
+    color: var(--main) !important;
+    transition: var(--transition) !important
+}
+
+.bg-main-light-t {
+    background-color: var(--main-light-transparent) !important;
+    transition: var(--transition) !important
+}
+
+.bg-main {
+    background-color: var(--main) !important;
+    border-color: var(--main) !important;
+    transition: var(--transition) !important
+}
+
+.btn-rounded {
+    border-radius: 30px !important;
+    padding: 10px !important
+}
+
+.btn-main {
+    background-color: var(--main) !important;
+    border-color: var(--main) !important;
+    transition: var(--transition) !important
+}
+
+.btn-main:hover {
+    background-color: var(--main-light) !important;
+    border-color: var(--main-light) !important;
+    transition: var(--transition) !important
+}
+
+#dropdown-main {
+    width: 20% !important;
+    border-radius: 30px !important;
+    padding: 10px !important;
+    background-color: var(--main) !important; 
+    border-color: var(--main) !important;
+    transition: var(--transition) !important
+}
+
+#dropdown-main:hover {
+   
+    background-color: var(--main-light) !important;
+    border-color: var(--main-light) !important;
+    transition: var(--transition) !important
+}
+
+a {
+    text-decoration: none !important;
+    color: var(--main) !important;
+    transition: var(--transition) !important
+}
+
+a:hover {
+    color: var(--main-light) !important;
+    transition: var(--transition) !important;
+}
+
+.disabled {
+    color: var(--main-light) !important
+}
