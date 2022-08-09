@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom"
 import {  collection, getDocs} from "firebase/firestore"
 import { db } from "../firebase"
 
-export default function LoginAdmin() {
+export default function LoginUser() {
 
     const emailRef = useRef()
     const passwordRef = useRef() 
@@ -15,7 +15,7 @@ export default function LoginAdmin() {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const [firms, setFirms] = useState([])
-    const [firmAdmins, setFirmAdmins] = useState([])
+    const [firmUsers, setFirmUsers] = useState([])
 
     useEffect(() => {
       getFirms()
@@ -30,14 +30,14 @@ export default function LoginAdmin() {
     })
   };
  
-    const getFirmAdmins = async () => {
-      if(firmRef.current.value.length === 6) { 
-        setFirmAdmins([])
+    const getFirmUsers = async () => {
+      if(firmRef.current.value.length === 6) {
+        setFirmUsers([])
         setLoading(false)
-        const querySnapshot = await getDocs(collection(db, "firm/" + firmRef.current.value + "/admin"));
+        const querySnapshot = await getDocs(collection(db, "firm/" + firmRef.current.value + "/user"));
           querySnapshot.forEach((doc) => {
             const data = doc.data()
-            setFirmAdmins(prevState => ([...prevState, data.email])
+            setFirmUsers(prevState => ([...prevState, data.email])
           );
         })
       } else {
@@ -51,12 +51,12 @@ export default function LoginAdmin() {
         
 
         if (firms.includes(firmRef.current.value)) {
-          if (firmAdmins.includes(emailRef.current.value)){
+          if (firmUsers.includes(emailRef.current.value)){
             setError("")
             setLoading(true)
             await login(emailRef.current.value, passwordRef.current.value)
             alert("Successfully logged in")
-            navigate("/dashboard")
+            navigate("/user-dashboard")
           } 
           else {
             alert("User does not belong in this firm")
@@ -72,7 +72,7 @@ export default function LoginAdmin() {
     <>
         <Card>
             <Card.Body>
-            <h2 className="text-center mb-4">Log In</h2>
+            <h2 className="text-center mb-4">Log In User</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
                 <Form.Group id="email">
@@ -85,7 +85,7 @@ export default function LoginAdmin() {
                 </Form.Group>
                 <Form.Group id="firmCode">
                 <Form.Label>Firm Code</Form.Label>
-                <Form.Control type="text" ref={firmRef} onChange={getFirmAdmins} required />
+                <Form.Control type="text" ref={firmRef} onChange={getFirmUsers} required />
                 </Form.Group>
                 <Button disabled={loading} className="w-100 mt-4 btn-main" type="submit">
                 Log In
@@ -97,7 +97,7 @@ export default function LoginAdmin() {
         </Card.Body>
          </Card>
         <div className='w-100 text-center mt-2'>
-            Need an account? <Link to="/signup-admin">Sign up</Link>
+            Need an account? <Link to="/signup">Sign up</Link>
         </div>
     </>
   )
