@@ -5,14 +5,13 @@ import LoginAdmin from "./auth-pages/LoginAdmin";
 import Dashboard from "./admin-pages/Dashboard";
 import UserDashboard from "./user-pages/UserDashboard";
 import Overview from "./admin-pages/Overview";
-import PrivateRoute from "./auth-pages/PrivateRoute"
+import PrivateRouteAdmin from "./auth-pages/PrivateRouteAdmin"
+import PrivateRouteUser from "./auth-pages/PrivateRouteUser"
 import ForgotPassword from "./auth-pages/ForgotPassword"
 import NavbarComp from "./components/NavbarComp";
 import { AuthProvider } from "./contexts/AuthContext"
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import "react-bootstrap"
-
-
 
 
 function App() {
@@ -23,16 +22,16 @@ function App() {
           <AuthProvider>
             <Routes>
               {/* Admin Components */}
-              <Route exact path="/signup-admin" element={<SignupAdmin/>}/>
-              <Route exact path="/login-admin" element={<LoginAdmin/>}/>
-              <Route exact path="/dashboard" element={<PrivateRoute><NavbarComp></NavbarComp><Dashboard></Dashboard></PrivateRoute>}/>
-              <Route exact path="/overview" element={<PrivateRoute><NavbarComp></NavbarComp><Overview></Overview></PrivateRoute>}/>
+              <Route path="/signup-admin" element={<SignupAdmin/>}/>
+              <Route path="/login-admin" element={<LoginAdmin/>}/>
+              <Route path="/dashboard" element={<PrivateRouteAdmin><NavbarComp></NavbarComp><Dashboard></Dashboard></PrivateRouteAdmin>}/>
+              <Route path="/overview" element={<PrivateRouteAdmin><NavbarComp></NavbarComp><Overview></Overview></PrivateRouteAdmin>}/>
               
               {/* User Components */}
-              <Route exact path="/signup" element={<SignupUser/>}/>
-              <Route exact path="/login" element={<LoginUser/>}/>
-              <Route exact path="/user-dashboard" element={<PrivateRoute><NavbarComp></NavbarComp><UserDashboard></UserDashboard></PrivateRoute>}/>
-              <Route exact path="/forgot-password" element={<ForgotPassword/>}/>
+              <Route path="/signup" element={<SignupUser/>}/>
+              <Route path="/login" element={<LoginUser/>}/>
+              <Route path="/user-dashboard" element={<PrivateRouteUser><NavbarComp></NavbarComp><UserDashboard></UserDashboard></PrivateRouteUser>}/>
+              <Route path="/forgot-password" element={<ForgotPassword/>}/>
             </Routes>
           </AuthProvider>
         </Router>
