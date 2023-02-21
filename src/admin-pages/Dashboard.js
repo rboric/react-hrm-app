@@ -1,14 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Card,
-  Button,
-  Alert,
-  Form,
-  DropdownButton,
-  Dropdown,
-} from "react-bootstrap";
+import { Button, Alert, Form, DropdownButton, Dropdown } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { db } from "../firebase";
 import {
   addDoc,
@@ -23,49 +16,45 @@ import {
 import Tasks from "../components/Tasks";
 
 export default function Dashboard() {
+  // Auth
+  const { currentUser, currentFirm } = useAuth();
+
+  // Navigate
+  const navigate = useNavigate();
+
+  // State
+  const [firm, setFirm] = useState([]);
   const [error, setError] = useState("");
-  const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
+
+  // Ref
   const taskTitleRef = useRef();
   const taskDescriptionRef = useRef();
   const taskRequirementsRef = useRef();
-  const navigate = useNavigate();
+
+  // Tasks
+  const [importance, setImportance] = useState("");
   const [taskData, setTaskData] = useState([]);
   const [users, setUsers] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
-  const [firmsPath, setFirmsPath] = useState([]);
-  const [currentFirm, setCurrentFirm] = useState();
 
   useEffect(() => {
-    const getFirms = async () => {
-      const querySnapshot = await getDocs(collection(db, "firm"));
+    const getCurrentFirm = async () => {
+      const docRef = collection(db, "/firm");
+      const currentFirmQuery = query(
+        docRef,
+        where("id", "==", parseInt(currentFirm))
+      );
+      const querySnapshot = await getDocs(currentFirmQuery);
       querySnapshot.forEach((doc) => {
-        setFirmsPath((prevState) => [...prevState, doc.ref.path]);
-      });
-    };
-    getFirms();
-  }, []);
-
-  useEffect(() => {
-    const getCurrentFirm = async (array) => {
-      array.forEach(async (el) => {
-        const docRef = collection(db, el + "/admin");
-        const currentFirmQuery = query(
-          docRef,
-          where("email", "==", currentUser.email)
-        );
-        await getDocs(currentFirmQuery).then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            setCurrentFirm(doc.ref._path.segments[6]);
-          });
-        });
+        setFirm(doc.data());
       });
     };
 
-    getCurrentFirm(firmsPath);
-  }, [firmsPath, currentUser.email]);
+    getCurrentFirm();
+  }, [currentFirm]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     const getData = async () => {
       const querySnapshot = await getDocs(
         collection(db, "firm/" + currentFirm + "/tasks/")
@@ -79,7 +68,8 @@ export default function Dashboard() {
             task_title: data.task_title,
             task_description: data.task_description,
             task_requirements: data.task_requirements,
-            /* task_assignedUsers: data.task_assignedUsers */
+            task_assignedUsers: data.task_assignedUsers,
+            task_importance: data.task_importance,
           },
         ]);
       });
@@ -87,7 +77,7 @@ export default function Dashboard() {
 
     const getUsers = async () => {
       const querySnapshot = await getDocs(
-        collection(db, "firm/" + currentFirm + "/admin")
+        collection(db, "firm/" + currentFirm + "/user")
       );
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -105,9 +95,9 @@ export default function Dashboard() {
 
     getData();
     getUsers();
-  }, [currentFirm]);
+  }, [currentFirm]); */
 
-  const assignUserForTask = async (id, firstname, lastname, email) => {
+  /* const assignUserForTask = async (id, firstname, lastname, email) => {
     if (
       assignedUsers.find((assignedUser) => {
         return assignedUser.id === id;
@@ -125,9 +115,9 @@ export default function Dashboard() {
         },
       ]);
     }
-  };
+  }; */
 
-  const deleteTask = async (id) => {
+  /* const deleteTask = async (id) => {
     try {
       setLoading(true);
       await deleteDoc(doc(db, "firm/" + currentFirm + "/tasks", id));
@@ -137,9 +127,9 @@ export default function Dashboard() {
       setError(JSON.stringify(e));
     }
     setLoading(false);
-  };
+  }; */
 
-  const updateTask = async (id, title, description, requirements) => {
+  /* const updateTask = async (id, title, description, requirements) => {
     try {
       setLoading(true);
       await setDoc(doc(db, "firm/" + currentFirm + "/tasks", id), {
@@ -153,9 +143,9 @@ export default function Dashboard() {
       setError(JSON.stringify(error));
     }
     setLoading(false);
-  };
+  }; */
 
-  const createTask = async (e) => {
+  /* const createTask = async (e) => {
     e.preventDefault();
 
     try {
@@ -166,6 +156,7 @@ export default function Dashboard() {
         task_description: taskDescriptionRef.current.value,
         task_requirements: taskRequirementsRef.current.value,
         task_assignedUsers: assignedUsers,
+        task_importance: importance,
         creator: currentUser.uid,
       });
       navigate(0);
@@ -175,23 +166,20 @@ export default function Dashboard() {
     }
 
     setLoading(false);
-  };
+  }; */
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Profile</h2>
-          <strong>Email: </strong> {currentUser.email}
-        </Card.Body>
-      </Card>
-      <div className="w-50 text-center mx-auto mt-5">
-        <Form onSubmit={createTask}>
-          <Form.Group id="firstname">
+    <div className="w-75 mx-auto">
+      <h2 className="text-center mb-4">Profile</h2>
+      <h2 className="text-center mb-4">{firm.firmname}</h2>
+      <strong>Email: </strong> {currentUser.email}
+      <div className="text-center mx-auto mt-5">
+        <Form>
+          {/* <Form.Group id="firstname">
             <Form.Label>Task Title</Form.Label>
             <Form.Control type="firstname" ref={taskTitleRef} required />
-          </Form.Group>
-          <Form.Group id="lastname">
+          </Form.Group> */}
+          {/* <Form.Group id="lastname">
             <Form.Label>Task Description</Form.Label>
             <Form.Control
               as="textarea"
@@ -208,12 +196,40 @@ export default function Dashboard() {
               required
             />
           </Form.Group>
-          <DropdownButton
-            disabled={loading}
-            className="mt-4 mx-auto"
-            id="dropdown-main"
-            title="Assign"
-          >
+          <Form.Group>
+            <Form.Label>Task Importaance</Form.Label>
+            <div>
+              <Button
+                className="VI"
+                onClick={() => {
+                  setImportance("A VI");
+                }}
+              >
+                VERY IMPORTANT
+              </Button>
+              <Button
+                className="M"
+                onClick={() => {
+                  setImportance("B M");
+                }}
+              >
+                Medium
+              </Button>
+              <Button
+                className="NcdI"
+                onClick={() => {
+                  setImportance("C NI");
+                }}
+              >
+                Not so important
+              </Button>
+            </div>
+
+            {importance}
+            <Button value="m">MEDIUM</Button>
+              <Button value="nsi">NOT SO IMPORTANT</Button>
+          </Form.Group> */}
+          {/* <DropdownButton disabled={loading} title="Assign">
             {users.map((user, i) => {
               return (
                 <Dropdown.Item
@@ -231,8 +247,8 @@ export default function Dashboard() {
                 </Dropdown.Item>
               );
             })}
-          </DropdownButton>
-          <div className="mt-4">
+          </DropdownButton> */}
+          {/*  <div>
             {assignedUsers.map((assignedUser, index) => {
               return (
                 <p key={index}>
@@ -244,27 +260,21 @@ export default function Dashboard() {
                 </p>
               );
             })}
-          </div>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Button
-            disabled={loading}
-            className="w-25 mt-4 btn-main btn-rounded"
-            type="submit"
-          >
+          </div> */}
+          {/* {error && <Alert variant="danger">{error}</Alert>}
+          <Button disabled={loading} type="submit">
             Create Task
-          </Button>
+          </Button> */}
         </Form>
       </div>
-      <div className="flex w-75 text-center mx-auto">
-        {taskData && (
-          <Tasks
-            taskData={taskData}
-            loading={loading}
-            deleteTask={deleteTask}
-            updateTask={updateTask}
-          ></Tasks>
-        )}
-      </div>
-    </>
+      {/* {taskData && (
+        <Tasks
+          taskData={taskData}
+          loading={loading}
+          deleteTask={deleteTask}
+          updateTask={updateTask}
+        ></Tasks>
+      )} */}
+    </div>
   );
 }

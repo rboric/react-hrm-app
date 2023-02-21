@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -7,6 +7,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { collection, getDocs, query } from "firebase/firestore";
+
 const AuthContext = React.createContext();
 
 export function useAuth() {
@@ -15,6 +17,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
+  const [currentFirm, setCurrentFirm] = useState();
   const [loading, setLoading] = useState(true);
 
   function login(email, password) {
@@ -33,15 +36,22 @@ export function AuthProvider({ children }) {
     return sendPasswordResetEmail(auth, email);
   }
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        user.getIdTokenResult().then((idTokenResult) => {
-          user.admin = idTokenResult.claims.admin;
-          user.notAdmin = !user.admin;
-        });
+  async function getCurrentFirm(user) {
+    const docRef = collection(db, "/admin");
+    const currentFirmQuery = query(docRef);
+    const querySnapshot = await getDocs(currentFirmQuery);
+    querySnapshot.forEach((doc) => {
+      if (doc.id === user.uid) {
+        setCurrentFirm(doc.data().firm_id);
       }
+    });
+    return currentFirm;
+  }
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      getCurrentFirm(user);
       setLoading(false);
     });
 
@@ -50,6 +60,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    currentFirm,
     login,
     logout,
     resetPassword,

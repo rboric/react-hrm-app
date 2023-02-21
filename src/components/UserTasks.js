@@ -1,20 +1,25 @@
-import React, {useState, useRef} from "react"
-import { Card, Button, Modal, Form } from "react-bootstrap"
+import React from "react";
+import { Card } from "react-bootstrap";
 
-export default function UserTasks({ loading, taskData, deleteTask, updateTask }) { 
+export default function UserTasks({ taskData }) {
+  const taskSorted = taskData.sort();
 
-    return (
-        <div>
-            {taskData.map((el, i) => {
-                    return (
-                        <Card key={i} className="mt-4 mb-4 w-100">
-                        <Card.Header className="bg-main text-white"><Card.Title className="mt-2">{el.task_title}</Card.Title></Card.Header>
-                            <Card.Body className="">
-                              <Card.Text>{el.task_description}</Card.Text>
-                              <Card.Text>Requirements:
-                              {" " + el.task_requirements}
-                              </Card.Text>
-                              {/* Assigned Users: 
+  return (
+    <div className="d-flex flex-wrap">
+      {taskSorted.map((el, i) => {
+        return (
+          <div key={i} className="col-md-6">
+            <Card>
+              <Card.Header className={el.task_importance}>
+                <Card.Title className="mt-2">{el.task_title}</Card.Title>
+              </Card.Header>
+              <Card.Body className={el.task_importance}>
+                <Card.Text>{el.task_description}</Card.Text>
+                <Card.Text>
+                  Requirements:
+                  {" " + el.task_requirements}
+                </Card.Text>
+                {/* Assigned Users: 
                               <ul>
                               {" " + el.task_assignedUsers.map((user) => {
                                 return(
@@ -22,10 +27,11 @@ export default function UserTasks({ loading, taskData, deleteTask, updateTask })
                                 )
                               })}
                               </ul> */}
-                            </Card.Body>
-                        </Card>)   
-                    })
-                }           
-        </div>
-    )
+              </Card.Body>
+            </Card>
+          </div>
+        );
+      })}
+    </div>
+  );
 }

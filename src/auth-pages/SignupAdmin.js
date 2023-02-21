@@ -4,7 +4,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { setDoc, doc } from "firebase/firestore";
-import { getFunctions, httpsCallable } from "firebase/functions";
 
 export default function SignupAdmin() {
   const emailRef = useRef();
@@ -12,16 +11,11 @@ export default function SignupAdmin() {
   const passwordConfirmRef = useRef();
   const firstNameRef = useRef();
   const lastNameRef = useRef();
-  const firmNameRef = useRef();
-  const firmCodeRef = useRef();
+  const firmNumberRef = useRef();
   const { signup } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const randomNumber = Math.floor(Math.random() * 1000001);
-
-  const functions = getFunctions();
-  const addAdminRole = httpsCallable(functions, "addAdminRole");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -34,40 +28,20 @@ export default function SignupAdmin() {
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value).then(
         (cred) => {
-          return setDoc(
-            doc(db, "firm/" + randomNumber + "/admin", cred.user.uid),
-            {
-              firstname: firstNameRef.current.value,
-              lastname: lastNameRef.current.value,
-              email: emailRef.current.value,
-            }
-          );
+          return setDoc(doc(db, "admin", cred.user.uid), {
+            firstname: firstNameRef.current.value,
+            lastname: lastNameRef.current.value,
+            email: emailRef.current.value,
+            firm_id: firmNumberRef.current.value,
+          });
         }
       );
-      await addAdminRole({ email: emailRef.current.value })
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      alert("Your firm number is: " + randomNumber);
     } catch (e) {
       setError(e);
     }
 
     setLoading(false);
-  }
-  async function setFirmName() {
-    console.log(firmCodeRef.current.value);
-    try {
-      await setDoc(doc(db, "firm/", firmCodeRef.current.value), {
-        name: firmNameRef.current.value,
-      });
-      navigate("/login-admin");
-    } catch {
-      console.error(error);
-    }
+    navigate("/login-admin");
   }
 
   return (
@@ -97,19 +71,12 @@ export default function SignupAdmin() {
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control type="password" ref={passwordConfirmRef} required />
             </Form.Group>
-            <Form.Group id="firmname">
-              <Form.Label>Firm Name</Form.Label>
-              <Form.Control type="text" ref={firmNameRef} />
-            </Form.Group>
-            <Form.Group id="firmcode">
-              <Form.Label>Firm Code</Form.Label>
-              <Form.Control type="text" ref={firmCodeRef} />
+            <Form.Group id="firmnumber">
+              <Form.Label>Firm Number</Form.Label>
+              <Form.Control type="text" ref={firmNumberRef} required />
             </Form.Group>
             <Button disabled={loading} className="w-100 mt-4" type="submit">
               Sign Up
-            </Button>
-            <Button className="w-100 mt-4" onClick={setFirmName}>
-              SET FIRM NAME
             </Button>
           </Form>
         </Card.Body>
