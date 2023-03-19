@@ -7,7 +7,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { collection, getDocs, query } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 
 const AuthContext = React.createContext();
 
@@ -18,6 +18,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [currentFirm, setCurrentFirm] = useState();
+  const [admin, setAdmin] = useState();
   const [loading, setLoading] = useState(true);
 
   function login(email, password) {
@@ -36,31 +37,32 @@ export function AuthProvider({ children }) {
     return sendPasswordResetEmail(auth, email);
   }
 
-  async function getCurrentFirm(user) {
-    const docRef = collection(db, "/admin");
-    const currentFirmQuery = query(docRef);
-    const querySnapshot = await getDocs(currentFirmQuery);
-    querySnapshot.forEach((doc) => {
-      if (doc.id === user.uid) {
-        setCurrentFirm(doc.data().firm_id);
-      }
-    });
+  async function getUserData(user) {
+    const ref = doc(db, "/user", user.uid);
+    const docSnap = await getDoc(ref);
+    if (docSnap.exists) {
+      setCurrentFirm(docSnap.data().firm_id);
+      setAdmin(docSnap.data().admin);
+    }
+
     return currentFirm;
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
-      getCurrentFirm(user);
+      getUserData(user);
       setLoading(false);
     });
 
     return unsubscribe;
+    // eslint-disable-next-line
   }, []);
 
   const value = {
     currentUser,
     currentFirm,
+    admin,
     login,
     logout,
     resetPassword,

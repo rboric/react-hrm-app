@@ -13,7 +13,7 @@ export default function NavbarComp() {
 
     try {
       await logout();
-      navigate("/login-admin");
+      navigate("/login");
     } catch {
       setError("Failed to log out");
     }
@@ -30,17 +30,15 @@ export default function NavbarComp() {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto"></Nav>
           <Nav>
-            <Nav.Link className="disabled">
+            <NavLink className="disabled">
               Logged in as {currentUser.email}
-            </Nav.Link>
-            {/* <NavLink>
-              <Link to="/dashboard">Dashboard</Link>
             </NavLink>
-            <NavLink>
-              <Link to="/overview" state={"123123"}>
-                Overview
-              </Link>
-            </NavLink> */}
+            <Nav.Link as={Link} to="/dashboard">
+              Dashboard
+            </Nav.Link>
+            <Nav.Link as={Link} to="/overview">
+              Overview
+            </Nav.Link>
             <NavLink onClick={handleLogout}>Log Out</NavLink>
           </Nav>
         </Navbar.Collapse>

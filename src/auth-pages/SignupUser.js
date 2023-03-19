@@ -32,7 +32,10 @@ export default function SignupUser() {
             firstname: firstNameRef.current.value,
             lastname: lastNameRef.current.value,
             email: emailRef.current.value,
-            firm_id: firmNumberRef.current.value,
+            firm_id: parseInt(firmNumberRef.current.value),
+            admin: false,
+            salary: 10,
+            hours: 7,
           });
         }
       );
@@ -53,15 +56,15 @@ export default function SignupUser() {
           <Form onSubmit={handleSubmit}>
             <Form.Group id="firstname">
               <Form.Label>First Name</Form.Label>
-              <Form.Control type="firstname" ref={firstNameRef} required />
+              <Form.Control type="text" ref={firstNameRef} required />
             </Form.Group>
             <Form.Group id="lastname">
               <Form.Label>Last Name</Form.Label>
-              <Form.Control type="lastname" ref={lastNameRef} required />
+              <Form.Control type="text" ref={lastNameRef} required />
             </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
+              <Form.Control type="text" ref={emailRef} required />
             </Form.Group>
             <Form.Group id="password">
               <Form.Label>Password</Form.Label>
@@ -73,7 +76,7 @@ export default function SignupUser() {
             </Form.Group>
             <Form.Group id="firmnumber">
               <Form.Label>Firm Number</Form.Label>
-              <Form.Control type="text" ref={firmNumberRef} />
+              <Form.Control type="number" ref={firmNumberRef} required />
             </Form.Group>
             <Button disabled={loading} className="w-100 mt-4" type="submit">
               Sign Up

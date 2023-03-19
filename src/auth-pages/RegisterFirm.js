@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { db } from "../firebase";
 import { addDoc, collection } from "firebase/firestore";
+import { Link } from "react-router-dom";
 
 export default function SignupAdmin() {
   const firmNameRef = useRef();
@@ -39,6 +40,9 @@ export default function SignupAdmin() {
           </Form>
         </Card.Body>
       </Card>
+      <div className="w-100 text-center mt-2">
+        Already have an account? <Link to="/login-admin">Log In</Link>
+      </div>
     </>
   );
 }

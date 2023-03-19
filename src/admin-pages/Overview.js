@@ -16,21 +16,19 @@ export default function Overview() {
   const [show, setShow] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [users, setUsers] = useState([]);
-  const [firm, setFirm] = useState();
-  const { currentFirm } = useAuth();
+  const { currentFirm, admin } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const userSalaryRef = useRef();
   const userHoursRef = useRef();
   let counter = 0;
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => setShow(!show);
 
   const updateUser = async (id, salary, hours) => {
     try {
       setLoading(true);
-      await updateDoc(doc(db, "firm/" + currentFirm + "/user", id), {
+      await updateDoc(doc(db, "user", id), {
         salary: salary,
         hours: hours,
       });
@@ -42,26 +40,11 @@ export default function Overview() {
   };
 
   useEffect(() => {
-    const getCurrentFirm = async () => {
-      const docRef = collection(db, "/firm");
-      const currentFirmQuery = query(
-        docRef,
-        where("id", "==", String(currentFirm))
-      );
-      const querySnapshot = await getDocs(currentFirmQuery);
-      querySnapshot.forEach((doc) => {
-        setFirm(doc.data());
-      });
-    };
-    getCurrentFirm();
-  }, [currentFirm]);
-
-  useEffect(() => {
     async function getUsers() {
-      const docRef = collection(db, "/admin");
+      const docRef = collection(db, "/user");
       const currentFirmQuery = query(
         docRef,
-        where("firm_id", "==", String(currentFirm))
+        where("firm_id", "==", currentFirm)
       );
       const querySnapshot = await getDocs(currentFirmQuery);
       querySnapshot.forEach((doc) => {
@@ -74,6 +57,8 @@ export default function Overview() {
             firstname: data.firstname,
             lastname: data.lastname,
             email: data.email,
+            hours: data.hours,
+            salary: data.salary,
           },
         ]);
       });
@@ -94,7 +79,7 @@ export default function Overview() {
           <th>Salary/h</th>
           <th>Hours/day</th>
           <th>Total</th>
-          <th>Edit</th>
+          {admin && <th>Edit</th>}
         </tr>
       </thead>
       <tbody>
@@ -105,24 +90,26 @@ export default function Overview() {
               <td>{user.firstname}</td>
               <td>{user.lastname}</td>
               <td>{user.email}</td>
-              {/*               <td>{user.salary}$/h</td>
+              <td>{user.salary}$/h</td>
               <td>{user.hours}</td>
-              <td>{user.salary * user.hours}$/day</td> */}
-              <td>
-                <Button
-                  disabled={loading}
-                  onClick={() => {
-                    handleShow();
-                    setModalData(user);
-                  }}
-                >
-                  Change
-                </Button>
-              </td>
+              <td>{user.salary * user.hours}$</td>
+              {admin && (
+                <td>
+                  <Button
+                    disabled={loading}
+                    onClick={() => {
+                      handleShow();
+                      setModalData(user);
+                    }}
+                  >
+                    Change
+                  </Button>
+                </td>
+              )}
             </tr>
           );
         })}
-        <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal show={show} onHide={handleShow} animation={false}>
           <Modal.Header closeButton>
             <Modal.Title>{modalData.firstname}</Modal.Title>
           </Modal.Header>
@@ -131,9 +118,9 @@ export default function Overview() {
               className="mb-3 w-100 col-md-12"
               controlId="exampleForm.ControlInput1"
             >
-              <Form.Label>Firstname</Form.Label>
+              <Form.Label>First name</Form.Label>
               <Form.Control disabled defaultValue={modalData.firstname} />
-              <Form.Label>Lastname</Form.Label>
+              <Form.Label>Last name</Form.Label>
               <Form.Control disabled defaultValue={modalData.lastname} />
               <Form.Label>Salary</Form.Label>
               <Form.Control
@@ -144,23 +131,15 @@ export default function Overview() {
               <Form.Label>Hours</Form.Label>
               <Form.Control defaultValue={modalData.hours} ref={userHoursRef} />
             </Form.Group>
-            {/* <Form.Group className="mb-3 w-100" controlId="exampleForm.ControlInput1">
-                                    <Form.Label>Assigned Users</Form.Label>
-                                    <Form.Control
-                                        ref={taskRequirementsRef}
-                                        defaultValue={modalData.task_assignedUsers[0].email}
-                                        autoFocus
-                                    />
-                                    </Form.Group> */}
           </Form>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleShow}>
               Close
             </Button>
             <Button
               variant="primary"
               onClick={() => {
-                handleClose();
+                handleShow();
                 updateUser(
                   modalData.id,
                   userSalaryRef.current.value,

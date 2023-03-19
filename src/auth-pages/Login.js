@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 export default function LoginAdmin() {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const firmRef = useRef();
   const { login } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,8 +16,12 @@ export default function LoginAdmin() {
 
     setError("");
     setLoading(true);
-    await login(emailRef.current.value, passwordRef.current.value);
-    navigate("/dashboard");
+    try {
+      await login(emailRef.current.value, passwordRef.current.value);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+    }
 
     setLoading(false);
   }
@@ -37,10 +40,6 @@ export default function LoginAdmin() {
             <Form.Group id="password">
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" ref={passwordRef} required />
-            </Form.Group>
-            <Form.Group id="firmCode">
-              <Form.Label>Firm Code</Form.Label>
-              <Form.Control type="text" ref={firmRef} required />
             </Form.Group>
             <Button
               disabled={loading}

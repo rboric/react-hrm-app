@@ -1,9 +1,12 @@
 import React, { useState, useRef } from "react";
 import { Card, Button, Modal, Form, ListGroup } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
+  const { admin } = useAuth();
+
   const [show, setShow] = useState(false);
-  const [modalData, setModalData] = useState([]);
+  const [modalTaskData, setmodalTaskData] = useState([]);
   const taskTitleRef = useRef();
   const taskDescriptionRef = useRef();
   const taskRequirementsRef = useRef();
@@ -18,49 +21,59 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
         return (
           <div key={i} className="col-md-6">
             <Card>
-              <Card.Header className={el.task_importance}>
-                <Card.Title>{el.task_title}</Card.Title>
+              <Card.Header className={el.importance}>
+                <Card.Title>{el.title}</Card.Title>
               </Card.Header>
-              <Card.Body className={el.task_importance}>
-                <Card.Text>{el.task_description}</Card.Text>
+              <Card.Body className={el.importance}>
+                <Card.Text>{el.description}</Card.Text>
                 <Card.Text>
                   Requirements:
-                  {" " + el.task_requirements}
+                  {" " + el.requirements}
                 </Card.Text>
                 Assigned Users:
                 <ListGroup>
-                  {el.task_assignedUsers.map((assignedUser, id) => {
+                  {el.assignedUsers.map((assignedUser, id) => {
                     return (
                       <ListGroup.Item key={id}>
-                        {assignedUser.email}
+                        {assignedUser.email +
+                          " " +
+                          assignedUser.firstname +
+                          " " +
+                          assignedUser.lastname}
                       </ListGroup.Item>
                     );
                   })}
                 </ListGroup>
               </Card.Body>
-              <Button
-                disabled={loading}
-                onClick={() => {
-                  deleteTask(el.task_uid);
-                }}
-              >
-                Delete Task
-              </Button>
-              <Button
-                onClick={() => {
-                  handleShow();
-                  setModalData(el);
-                }}
-              >
-                Update Task
-              </Button>
+
+              {admin && (
+                <Button
+                  disabled={loading}
+                  onClick={() => {
+                    deleteTask(el.uid);
+                  }}
+                >
+                  Delete Task
+                </Button>
+              )}
+
+              {admin && (
+                <Button
+                  onClick={() => {
+                    handleShow();
+                    setmodalTaskData(el);
+                  }}
+                >
+                  Update Task
+                </Button>
+              )}
             </Card>
           </div>
         );
       })}
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
-          <Modal.Title>{modalData.task_title}</Modal.Title>
+          <Modal.Title>{modalTaskData.title}</Modal.Title>
         </Modal.Header>
         <Form className="p-2">
           <Form.Group
@@ -69,7 +82,7 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
           >
             <Form.Label>Task Title</Form.Label>
             <Form.Control
-              defaultValue={modalData.task_title}
+              defaultValue={modalTaskData.title}
               autoFocus
               ref={taskTitleRef}
             />
@@ -79,7 +92,7 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
             <Form.Control
               as="textarea"
               rows={3}
-              defaultValue={modalData.task_description}
+              defaultValue={modalTaskData.description}
               ref={taskDescriptionRef}
             />
           </Form.Group>
@@ -90,7 +103,7 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
             <Form.Label>Task Requirements</Form.Label>
             <Form.Control
               ref={taskRequirementsRef}
-              defaultValue={modalData.task_requirements}
+              defaultValue={modalTaskData.requirements}
               autoFocus
             />
           </Form.Group>
@@ -104,10 +117,11 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
             onClick={() => {
               handleClose();
               updateTask(
-                modalData.task_uid,
+                modalTaskData.uid,
                 taskTitleRef.current.value,
                 taskDescriptionRef.current.value,
-                taskRequirementsRef.current.value
+                taskRequirementsRef.current.value,
+                modalTaskData.assignedUsers
               );
             }}
           >
