@@ -1,8 +1,22 @@
 import React, { useState, useRef } from "react";
-import { Card, Button, Modal, Form, ListGroup } from "react-bootstrap";
+import {
+  Card,
+  Button,
+  Modal,
+  Form,
+  ListGroup,
+  Dropdown,
+  DropdownButton,
+} from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 
-export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
+export default function Tasks({
+  loading,
+  taskData,
+  deleteTask,
+  updateTask,
+  archiveTask,
+}) {
   const { admin } = useAuth();
 
   const [show, setShow] = useState(false);
@@ -11,64 +25,82 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
   const taskDescriptionRef = useRef();
   const taskRequirementsRef = useRef();
   const taskSorted = taskData.sort();
+  const [importance, setImportance] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleSelect = (e) => {
+    setImportance(e);
+    console.log(e);
+  };
 
   return (
     <div className="d-flex flex-wrap">
       {taskSorted.map((el, i) => {
         return (
-          <div key={i} className="col-md-6">
-            <Card>
-              <Card.Header className={el.importance}>
-                <Card.Title>{el.title}</Card.Title>
-              </Card.Header>
-              <Card.Body className={el.importance}>
-                <Card.Text>{el.description}</Card.Text>
-                <Card.Text>
-                  Requirements:
-                  {" " + el.requirements}
-                </Card.Text>
-                Assigned Users:
-                <ListGroup>
-                  {el.assignedUsers.map((assignedUser, id) => {
-                    return (
-                      <ListGroup.Item key={id}>
-                        {assignedUser.email +
-                          " " +
-                          assignedUser.firstname +
-                          " " +
-                          assignedUser.lastname}
-                      </ListGroup.Item>
-                    );
-                  })}
-                </ListGroup>
-              </Card.Body>
+          !el.archive && (
+            <div key={i} className="col-md-6">
+              <Card>
+                <Card.Header>
+                  <Card.Title>{el.title}</Card.Title>
+                </Card.Header>
+                <Card.Body className={el.importance}>
+                  <Card.Text>{el.description}</Card.Text>
+                  <Card.Text>
+                    Requirements:
+                    {" " + el.requirements}
+                  </Card.Text>
+                  Assigned Users:
+                  <ListGroup>
+                    {el.assignedUsers.map((assignedUser, id) => {
+                      return (
+                        <ListGroup.Item key={id}>
+                          {assignedUser.email +
+                            " " +
+                            assignedUser.firstname +
+                            " " +
+                            assignedUser.lastname}
+                        </ListGroup.Item>
+                      );
+                    })}
+                  </ListGroup>
+                </Card.Body>
 
-              {admin && (
-                <Button
-                  disabled={loading}
-                  onClick={() => {
-                    deleteTask(el.uid);
-                  }}
-                >
-                  Delete Task
-                </Button>
-              )}
+                {admin && (
+                  <Button
+                    disabled={loading}
+                    onClick={() => {
+                      deleteTask(el.uid);
+                    }}
+                  >
+                    Delete Task
+                  </Button>
+                )}
 
-              {admin && (
-                <Button
-                  onClick={() => {
-                    handleShow();
-                    setmodalTaskData(el);
-                  }}
-                >
-                  Update Task
-                </Button>
-              )}
-            </Card>
-          </div>
+                {admin && (
+                  <Button
+                    onClick={() => {
+                      handleShow();
+                      setmodalTaskData(el);
+                    }}
+                  >
+                    Update Task
+                  </Button>
+                )}
+                {admin && (
+                  <Button
+                    disabled={loading}
+                    onClick={() => {
+                      archiveTask(el.uid);
+                    }}
+                  >
+                    Archive Task
+                  </Button>
+                )}
+              </Card>
+            </div>
+          )
         );
       })}
       <Modal show={show} onHide={handleClose} animation={false}>
@@ -107,6 +139,21 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
               autoFocus
             />
           </Form.Group>
+          <Form.Group
+            className="mb-3 w-100"
+            controlId="exampleForm.ControlInput1"
+          >
+            <Form.Label>Importance</Form.Label>
+            <DropdownButton
+              disabled={loading}
+              title={importance}
+              onSelect={handleSelect}
+            >
+              <Dropdown.Item eventKey="high">High</Dropdown.Item>
+              <Dropdown.Item eventKey="medium">Medium</Dropdown.Item>
+              <Dropdown.Item eventKey="low">Low</Dropdown.Item>
+            </DropdownButton>
+          </Form.Group>
         </Form>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -121,7 +168,7 @@ export default function Tasks({ loading, taskData, deleteTask, updateTask }) {
                 taskTitleRef.current.value,
                 taskDescriptionRef.current.value,
                 taskRequirementsRef.current.value,
-                modalTaskData.assignedUsers
+                importance
               );
             }}
           >

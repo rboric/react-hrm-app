@@ -28,12 +28,12 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
 
   // Ref
-  const taskTitleRef = useRef();
-  const taskDescriptionRef = useRef();
-  const taskRequirementsRef = useRef();
+  const titleRef = useRef();
+  const descriptionRef = useRef();
+  const requirementsRef = useRef();
 
   // Tasks
-  /* const [importance, setImportance] = useState(""); */
+  const [importance, setImportance] = useState("");
   const [taskData, setTaskData] = useState([]);
   const [firmUsers, setFirmUsers] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
@@ -95,11 +95,12 @@ export default function Dashboard() {
           ...prevState,
           {
             uid: doc.id,
-            title: data.task_title,
-            description: data.task_description,
-            requirements: data.task_requirements,
-            assignedUsers: data.task_assignedUsers,
-            /* task_importance: data.task_importance, */
+            title: data.title,
+            description: data.description,
+            requirements: data.requirements,
+            assignedUsers: data.assignedUsers,
+            importance: data.importance,
+            archive: data.archive,
           },
         ]);
       });
@@ -146,16 +147,17 @@ export default function Dashboard() {
     title,
     description,
     requirements,
-    assignedUsers
+    importance
   ) => {
     try {
       setLoading(true);
       await setDoc(
         doc(db, "tasks", id),
         {
-          task_title: title,
-          task_description: description,
-          task_requirements: requirements,
+          title: title,
+          description: description,
+          requirements: requirements,
+          importance: importance,
         },
         { merge: true }
       );
@@ -174,34 +176,45 @@ export default function Dashboard() {
       setError("");
       setLoading(true);
       await addDoc(collection(db, "tasks"), {
-        task_title: taskTitleRef.current.value,
-        task_description: taskDescriptionRef.current.value,
-        task_requirements: taskRequirementsRef.current.value,
-        task_assignedUsers: assignedUsers,
-        /* task_importance: importance, */
+        title: titleRef.current.value,
+        description: descriptionRef.current.value,
+        requirements: requirementsRef.current.value,
+        assignedUsers: assignedUsers,
+        importance: importance,
         firm_id: parseInt(currentFirm),
         creator: currentUser.uid,
+        archive: false,
       });
-      console.log(
-        taskTitleRef.current.value,
-        taskDescriptionRef.current.value,
-        taskRequirementsRef.current.value,
-        parseInt(currentFirm),
-        currentUser.uid
-      );
       navigate(0);
     } catch (e) {
-      console.log(
-        taskTitleRef.current.value,
-        taskDescriptionRef.current.value,
-        taskRequirementsRef.current.value,
-        assignedUsers
-      );
       console.error(e);
       setError(JSON.stringify(e));
     }
 
     setLoading(false);
+  };
+
+  const archiveTask = async (id) => {
+    try {
+      setLoading(true);
+      await setDoc(
+        doc(db, "tasks", id),
+        {
+          archive: true,
+        },
+        { merge: true }
+      );
+      navigate(0);
+    } catch (error) {
+      console.error(error);
+      setError(JSON.stringify(error));
+    }
+    setLoading(false);
+  };
+
+  const handleSelect = (e) => {
+    setImportance(e);
+    console.log(e);
   };
 
   return (
@@ -214,14 +227,14 @@ export default function Dashboard() {
           <Form onSubmit={createTask}>
             <Form.Group id="firstname">
               <Form.Label>Task Title</Form.Label>
-              <Form.Control type="firstname" ref={taskTitleRef} required />
+              <Form.Control type="firstname" ref={titleRef} required />
             </Form.Group>
             <Form.Group id="lastname">
               <Form.Label>Task Description</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={5}
-                ref={taskDescriptionRef}
+                ref={descriptionRef}
                 required
               />
             </Form.Group>
@@ -229,43 +242,20 @@ export default function Dashboard() {
               <Form.Label>Requirements</Form.Label>
               <Form.Control
                 type="requirements"
-                ref={taskRequirementsRef}
+                ref={requirementsRef}
                 required
               />
             </Form.Group>
-            {/* <Form.Group>
-            <Form.Label>Task Importaance</Form.Label>
-            <div>
-              <Button
-                className="VI"
-                onClick={() => {
-                  setImportance("A VI");
-                }}
-              >
-                VERY IMPORTANT
-              </Button>
-              <Button
-                className="M"
-                onClick={() => {
-                  setImportance("B M");
-                }}
-              >
-                Medium
-              </Button>
-              <Button
-                className="NcdI"
-                onClick={() => {
-                  setImportance("C NI");
-                }}
-              >
-                Not so important
-              </Button>
-            </div>
-
+            <DropdownButton
+              disabled={loading}
+              title="Importance"
+              onSelect={handleSelect}
+            >
+              <Dropdown.Item eventKey="high">High</Dropdown.Item>
+              <Dropdown.Item eventKey="medium">Medium</Dropdown.Item>
+              <Dropdown.Item eventKey="low">Low</Dropdown.Item>
+            </DropdownButton>
             {importance}
-            <Button value="m">MEDIUM</Button>
-              <Button value="nsi">NOT SO IMPORTANT</Button>
-          </Form.Group> */}
             <DropdownButton disabled={loading} title="Assign">
               {firmUsers.map((user, i) => {
                 return (
@@ -314,6 +304,8 @@ export default function Dashboard() {
           loading={loading}
           deleteTask={deleteTask}
           updateTask={updateTask}
+          archiveTask={archiveTask}
+          assignedUsers={assignedUsers}
         ></Tasks>
       )}
     </div>

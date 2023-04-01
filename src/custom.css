@@ -1,111 +1,111 @@
 :root {
-    --main: #f79902;
-    --main-light: #f7bb61;
-    --main-light-transparent: #f7990250;
-    --transition: 0.2s;
-
+  --main: #f79902;
+  --main-light: #f7bb61;
+  --main-light-transparent: #f7990250;
+  --transition: 0.2s;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
 
 ::-webkit-scrollbar {
-    display: none;
-  }
+  display: none;
+}
 
 * {
-    box-shadow: none !important;
-    font-family: 'Roboto', sans-serif;
-    -ms-overflow-style: none;  
-    scrollbar-width: none;  
+  box-shadow: none !important;
+  font-family: "Roboto", sans-serif;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .text-white {
-    color: white !important;
-    transition: var(--transition) !important
+  color: white !important;
+  transition: var(--transition) !important;
 }
 
 .text-main {
-    color: var(--main) !important;
-    transition: var(--transition) !important
+  color: var(--main) !important;
+  transition: var(--transition) !important;
 }
 
-.VI {
-    border: none !important;
-    background: rgb(235,11,11) !important;
-    background: linear-gradient(90deg, rgba(235,11,11,1) 35%, rgba(185,37,37,1) 100%) !important;
-    color: white !important;
+.high {
+  border: none !important;
+  background: rgb(235, 11, 11, 0.7) !important;
+  color: white !important;
 }
 
-
-.M {
-    border: none !important;
-    background: rgb(255,184,0) !important;
-    background: linear-gradient(90deg, rgba(255,184,0,1) 35%, rgba(255,239,88,1) 100%) !important;
-    color: white !important;
+.medium {
+  border: none !important;
+  background: rgb(255, 184, 0, 0.7) !important;
+  color: white !important;
 }
 
-.NI {
-    border: none !important;
-    background: rgb(0,146,255) !important;
-    background: linear-gradient(90deg, rgba(0,146,255,1) 35%, rgba(0,81,156,1) 100%) !important;
-    color: white !important; 
+.low {
+  border: none !important;
+  background: rgb(0, 146, 255, 0.7) !important;
+  color: white !important;
+}
+
+.archive {
+  border: none !important;
+  background: rgba(91, 231, 208, 0.7) !important;
+  color: white !important;
 }
 
 .bg-main-light-t {
-    background-color: var(--main-light-transparent) !important;
-    transition: var(--transition) !important
+  background-color: var(--main-light-transparent) !important;
+  transition: var(--transition) !important;
 }
 
 .bg-main {
-    background-color: var(--main) !important;
-    border-color: var(--main) !important;
-    transition: var(--transition) !important
+  background-color: var(--main) !important;
+  border-color: var(--main) !important;
+  transition: var(--transition) !important;
 }
 
 .btn-rounded {
-    border-radius: 5px !important;
-    padding: 10px !important
+  border-radius: 5px !important;
+  padding: 10px !important;
 }
 
 .btn-main {
-    background-color: var(--main) !important;
-    border-color: var(--main) !important;
-    transition: var(--transition) !important
+  background-color: var(--main) !important;
+  border-color: var(--main) !important;
+  transition: var(--transition) !important;
 }
 
 .btn-main:hover {
-    background-color: var(--main-light) !important;
-    border-color: var(--main-light) !important;
-    transition: var(--transition) !important
+  background-color: var(--main-light) !important;
+  border-color: var(--main-light) !important;
+  transition: var(--transition) !important;
 }
 
 #dropdown-main {
-    width: 20% !important;
-    border-radius: 5px !important;
-    padding: 10px !important;
-    background-color: var(--main) !important; 
-    border-color: var(--main) !important;
-    transition: var(--transition) !important
+  width: 20% !important;
+  border-radius: 5px !important;
+  padding: 10px !important;
+  background-color: var(--main) !important;
+  border-color: var(--main) !important;
+  transition: var(--transition) !important;
 }
 
 #dropdown-main:hover {
-   
-    background-color: var(--main-light) !important;
-    border-color: var(--main-light) !important;
-    transition: var(--transition) !important
+  background-color: var(--main-light) !important;
+  border-color: var(--main-light) !important;
+  transition: var(--transition) !important;
 }
 
 a {
-    text-decoration: none !important;
-    color: var(--main) !important;
-    transition: var(--transition) !important
+  text-decoration: none !important;
+  color: var(--main) !important;
+  transition: var(--transition) !important;
 }
 
 a:hover {
-    color: var(--main-light) !important;
-    transition: var(--transition) !important;
+  color: var(--main-light) !important;
+  transition: var(--transition) !important;
 }
 
 .disabled {
-    color: var(--main-light) !important
+  color: var(--main-light) !important;
 }

@@ -2,8 +2,9 @@ import RegisterFirm from "./auth-pages/RegisterFirm";
 import SignupAdmin from "./auth-pages/SignupAdmin";
 import SignupUser from "./auth-pages/SignupUser";
 import Login from "./auth-pages/Login";
-import Dashboard from "./admin-pages/Dashboard";
-import Overview from "./admin-pages/Overview";
+import Dashboard from "./pages/Dashboard";
+import Overview from "./pages/Overview";
+import Archive from "./pages/Archive";
 import ForgotPassword from "./auth-pages/ForgotPassword";
 import NavbarComp from "./components/NavbarComp";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -35,6 +36,15 @@ function App() {
                 <>
                   <NavbarComp />
                   <Overview />
+                </>
+              }
+            />
+            <Route
+              path="/archive"
+              element={
+                <>
+                  <NavbarComp />
+                  <Archive />
                 </>
               }
             />

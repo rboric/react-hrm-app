@@ -39,6 +39,9 @@ export default function NavbarComp() {
             <Nav.Link as={Link} to="/overview">
               Overview
             </Nav.Link>
+            <Nav.Link as={Link} to="/archive">
+              Archive
+            </Nav.Link>
             <NavLink onClick={handleLogout}>Log Out</NavLink>
           </Nav>
         </Navbar.Collapse>
