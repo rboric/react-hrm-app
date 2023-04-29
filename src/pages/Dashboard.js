@@ -6,6 +6,7 @@ import { db } from "../firebase";
 import {
   addDoc,
   collection,
+  getDoc,
   getDocs,
   doc,
   deleteDoc,
@@ -30,7 +31,6 @@ export default function Dashboard() {
   // Ref
   const titleRef = useRef();
   const descriptionRef = useRef();
-  const requirementsRef = useRef();
 
   // Tasks
   const [importance, setImportance] = useState("");
@@ -97,10 +97,11 @@ export default function Dashboard() {
             uid: doc.id,
             title: data.title,
             description: data.description,
-            requirements: data.requirements,
             assignedUsers: data.assignedUsers,
             importance: data.importance,
             archive: data.archive,
+            comments: data.comments,
+            isActive: data.isActive,
           },
         ]);
       });
@@ -142,13 +143,7 @@ export default function Dashboard() {
     setLoading(false);
   };
 
-  const updateTask = async (
-    id,
-    title,
-    description,
-    requirements,
-    importance
-  ) => {
+  const updateTask = async (id, title, description, importance) => {
     try {
       setLoading(true);
       await setDoc(
@@ -156,7 +151,6 @@ export default function Dashboard() {
         {
           title: title,
           description: description,
-          requirements: requirements,
           importance: importance,
         },
         { merge: true }
@@ -178,12 +172,13 @@ export default function Dashboard() {
       await addDoc(collection(db, "tasks"), {
         title: titleRef.current.value,
         description: descriptionRef.current.value,
-        requirements: requirementsRef.current.value,
         assignedUsers: assignedUsers,
         importance: importance,
         firm_id: parseInt(currentFirm),
         creator: currentUser.uid,
         archive: false,
+        comments: [],
+        isActive: false,
       });
       navigate(0);
     } catch (e) {
@@ -207,11 +202,11 @@ export default function Dashboard() {
       navigate(0);
     } catch (error) {
       console.error(error);
-      setError(JSON.stringify(error));
+      setError(error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
-
   const handleSelect = (e) => {
     setImportance(e);
     console.log(e);
@@ -235,14 +230,6 @@ export default function Dashboard() {
                 as="textarea"
                 rows={5}
                 ref={descriptionRef}
-                required
-              />
-            </Form.Group>
-            <Form.Group id="requirements">
-              <Form.Label>Requirements</Form.Label>
-              <Form.Control
-                type="requirements"
-                ref={requirementsRef}
                 required
               />
             </Form.Group>
@@ -302,10 +289,10 @@ export default function Dashboard() {
         <Tasks
           taskData={taskData}
           loading={loading}
+          assignedUsers={assignedUsers}
           deleteTask={deleteTask}
           updateTask={updateTask}
           archiveTask={archiveTask}
-          assignedUsers={assignedUsers}
         ></Tasks>
       )}
     </div>

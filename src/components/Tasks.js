@@ -9,6 +9,7 @@ import {
   DropdownButton,
 } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
+import Comments from "../components/Comments";
 
 export default function Tasks({
   loading,
@@ -23,7 +24,6 @@ export default function Tasks({
   const [modalTaskData, setmodalTaskData] = useState([]);
   const taskTitleRef = useRef();
   const taskDescriptionRef = useRef();
-  const taskRequirementsRef = useRef();
   const taskSorted = taskData.sort();
   const [importance, setImportance] = useState("");
 
@@ -47,12 +47,8 @@ export default function Tasks({
                 </Card.Header>
                 <Card.Body className={el.importance}>
                   <Card.Text>{el.description}</Card.Text>
-                  <Card.Text>
-                    Requirements:
-                    {" " + el.requirements}
-                  </Card.Text>
                   Assigned Users:
-                  <ListGroup>
+                  <ListGroup variant="flush">
                     {el.assignedUsers.map((assignedUser, id) => {
                       return (
                         <ListGroup.Item key={id}>
@@ -65,39 +61,41 @@ export default function Tasks({
                       );
                     })}
                   </ListGroup>
+                  <Comments el={el}></Comments>
+                  <ListGroup horizontal>
+                    {admin && (
+                      <Button
+                        disabled={loading}
+                        onClick={() => {
+                          deleteTask(el.uid);
+                        }}
+                      >
+                        Delete Task
+                      </Button>
+                    )}
+
+                    {admin && (
+                      <Button
+                        onClick={() => {
+                          handleShow();
+                          setmodalTaskData(el);
+                        }}
+                      >
+                        Update Task
+                      </Button>
+                    )}
+                    {admin && (
+                      <Button
+                        disabled={loading}
+                        onClick={() => {
+                          archiveTask(el.uid);
+                        }}
+                      >
+                        Archive Task
+                      </Button>
+                    )}
+                  </ListGroup>
                 </Card.Body>
-
-                {admin && (
-                  <Button
-                    disabled={loading}
-                    onClick={() => {
-                      deleteTask(el.uid);
-                    }}
-                  >
-                    Delete Task
-                  </Button>
-                )}
-
-                {admin && (
-                  <Button
-                    onClick={() => {
-                      handleShow();
-                      setmodalTaskData(el);
-                    }}
-                  >
-                    Update Task
-                  </Button>
-                )}
-                {admin && (
-                  <Button
-                    disabled={loading}
-                    onClick={() => {
-                      archiveTask(el.uid);
-                    }}
-                  >
-                    Archive Task
-                  </Button>
-                )}
               </Card>
             </div>
           )
@@ -131,14 +129,7 @@ export default function Tasks({
           <Form.Group
             className="mb-3 w-100"
             controlId="exampleForm.ControlInput1"
-          >
-            <Form.Label>Task Requirements</Form.Label>
-            <Form.Control
-              ref={taskRequirementsRef}
-              defaultValue={modalTaskData.requirements}
-              autoFocus
-            />
-          </Form.Group>
+          ></Form.Group>
           <Form.Group
             className="mb-3 w-100"
             controlId="exampleForm.ControlInput1"
@@ -167,7 +158,6 @@ export default function Tasks({
                 modalTaskData.uid,
                 taskTitleRef.current.value,
                 taskDescriptionRef.current.value,
-                taskRequirementsRef.current.value,
                 importance
               );
             }}

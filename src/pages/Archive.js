@@ -23,10 +23,10 @@ export default function Archive() {
             uid: doc.id,
             title: data.title,
             description: data.description,
-            requirements: data.requirements,
             assignedUsers: data.assignedUsers,
             importance: data.importance,
             archive: data.archive,
+            comments: data.comments,
           },
         ]);
       });
@@ -48,10 +48,6 @@ export default function Archive() {
                   </Card.Header>
                   <Card.Body className="archive">
                     <Card.Text>{el.description}</Card.Text>
-                    <Card.Text>
-                      Requirements:
-                      {" " + el.requirements}
-                    </Card.Text>
                     Assigned Users:
                     <ListGroup>
                       {el.assignedUsers.map((assignedUser, id) => {
