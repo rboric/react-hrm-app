@@ -36,6 +36,10 @@ export default function SignupAdmin() {
             admin: true,
             salary: 10,
             hours: 7,
+            address: "",
+            nationality: "",
+            education: "",
+            gender: "",
           });
         }
       );

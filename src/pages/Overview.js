@@ -11,6 +11,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+import Timeoff from "../components/Timeoff";
 
 export default function Overview() {
   const [show, setShow] = useState(false);
@@ -59,6 +60,9 @@ export default function Overview() {
             email: data.email,
             hours: data.hours,
             salary: data.salary,
+            education: data.education,
+            gender: data.gender,
+            nationality: data.nationality,
           },
         ]);
       });
@@ -69,89 +73,103 @@ export default function Overview() {
   }, [currentFirm]);
 
   return (
-    <Table striped bordered hover size="lg">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>E-mail</th>
-          <th>Salary/h</th>
-          <th>Hours/day</th>
-          <th>Total</th>
-          {admin && <th>Edit</th>}
-        </tr>
-      </thead>
-      <tbody>
-        {users.map((user, i) => {
-          return (
-            <tr key={i}>
-              <td>{(counter = counter + 1)}</td>
-              <td>{user.firstname}</td>
-              <td>{user.lastname}</td>
-              <td>{user.email}</td>
-              <td>{user.salary}$/h</td>
-              <td>{user.hours}</td>
-              <td>{user.salary * user.hours}$</td>
-              {admin && (
-                <td>
-                  <Button
-                    disabled={loading}
-                    onClick={() => {
-                      handleShow();
-                      setModalData(user);
-                    }}
-                  >
-                    Change
-                  </Button>
-                </td>
-              )}
-            </tr>
-          );
-        })}
-        <Modal show={show} onHide={handleShow} animation={false}>
-          <Modal.Header closeButton>
-            <Modal.Title>{modalData.firstname}</Modal.Title>
-          </Modal.Header>
-          <Form className="p-2">
-            <Form.Group
-              className="mb-3 w-100 col-md-12"
-              controlId="exampleForm.ControlInput1"
-            >
-              <Form.Label>First name</Form.Label>
-              <Form.Control disabled defaultValue={modalData.firstname} />
-              <Form.Label>Last name</Form.Label>
-              <Form.Control disabled defaultValue={modalData.lastname} />
-              <Form.Label>Salary</Form.Label>
-              <Form.Control
-                defaultValue={modalData.salary}
-                autoFocus
-                ref={userSalaryRef}
-              />
-              <Form.Label>Hours</Form.Label>
-              <Form.Control defaultValue={modalData.hours} ref={userHoursRef} />
-            </Form.Group>
-          </Form>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleShow}>
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                handleShow();
-                updateUser(
-                  modalData.id,
-                  userSalaryRef.current.value,
-                  userHoursRef.current.value
-                );
-              }}
-            >
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </tbody>
-    </Table>
+    <>
+      <Table striped bordered hover size="lg">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>E-mail</th>
+            <th>Education</th>
+            <th>Nationality</th>
+            <th>Gender</th>
+            <th>Salary/h</th>
+            <th>Hours/day</th>
+            <th>Total</th>
+            <th>Total Monthly</th>
+            {admin && <th>Edit</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user, i) => {
+            return (
+              <tr key={i}>
+                <td>{(counter = counter + 1)}</td>
+                <td>{user.firstname}</td>
+                <td>{user.lastname}</td>
+                <td>{user.email}</td>
+                <td>{user.education}</td>
+                <td>{user.nationality}</td>
+                <td>{user.gender}</td>
+                <td>{user.salary}$/h</td>
+                <td>{user.hours}</td>
+                <td>{user.salary * user.hours}$</td>
+                <td>~ {23 * (user.salary * user.hours)}$</td>
+                {admin && (
+                  <td>
+                    <Button
+                      disabled={loading}
+                      onClick={() => {
+                        handleShow();
+                        setModalData(user);
+                      }}
+                    >
+                      Change
+                    </Button>
+                  </td>
+                )}
+              </tr>
+            );
+          })}
+          <Modal show={show} onHide={handleShow} animation={false}>
+            <Modal.Header closeButton>
+              <Modal.Title>{modalData.firstname}</Modal.Title>
+            </Modal.Header>
+            <Form className="p-2">
+              <Form.Group
+                className="mb-3 w-100 col-md-12"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label>First name</Form.Label>
+                <Form.Control disabled defaultValue={modalData.firstname} />
+                <Form.Label>Last name</Form.Label>
+                <Form.Control disabled defaultValue={modalData.lastname} />
+                <Form.Label>Salary</Form.Label>
+                <Form.Control
+                  defaultValue={modalData.salary}
+                  autoFocus
+                  ref={userSalaryRef}
+                />
+                <Form.Label>Hours</Form.Label>
+                <Form.Control
+                  defaultValue={modalData.hours}
+                  ref={userHoursRef}
+                />
+              </Form.Group>
+            </Form>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleShow}>
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  handleShow();
+                  updateUser(
+                    modalData.id,
+                    userSalaryRef.current.value,
+                    userHoursRef.current.value
+                  );
+                }}
+              >
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </tbody>
+      </Table>
+      <Timeoff></Timeoff>
+    </>
   );
 }

@@ -55,12 +55,19 @@ export default function Comments({ el }) {
         {show && (
           <InputGroup className="mb-3">
             <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-            <Form.Control required ref={commentRef} placeholder="Comment.." />
+            <Form.Control
+              required
+              ref={commentRef}
+              as="textarea"
+              rows={1}
+              placeholder="Comment.."
+            />
             {show && (
               <Button
                 disabled={loading}
                 onClick={() => {
                   createComment(el.uid, commentRef.current.value);
+                  commentRef.current.value = "";
                 }}
               >
                 &#8594;

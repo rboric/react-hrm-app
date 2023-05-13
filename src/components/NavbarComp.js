@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 export default function NavbarComp() {
   const [error, setError] = useState("");
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, admin } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -36,11 +36,16 @@ export default function NavbarComp() {
             <Nav.Link as={Link} to="/dashboard">
               Dashboard
             </Nav.Link>
-            <Nav.Link as={Link} to="/overview">
-              Overview
-            </Nav.Link>
+            {admin && (
+              <Nav.Link as={Link} to="/overview">
+                Overview
+              </Nav.Link>
+            )}
             <Nav.Link as={Link} to="/archive">
               Archive
+            </Nav.Link>
+            <Nav.Link as={Link} to="/profile">
+              Profile
             </Nav.Link>
             <NavLink onClick={handleLogout}>Log Out</NavLink>
           </Nav>
