@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
-import { Button, ListGroup, Form, InputGroup, Badge } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+
 import { db } from "../firebase";
-import { getDoc, doc, setDoc, addDoc, collection } from "firebase/firestore";
+import { getDoc, doc, addDoc, collection } from "firebase/firestore";
 
 export default function TimeoffRequest() {
   const { currentUser, currentFirm } = useAuth();
@@ -25,6 +25,7 @@ export default function TimeoffRequest() {
         user: userDoc.data().firstname + " " + userDoc.data().lastname,
         status: "Requested",
         notes: notesRef.current.value,
+        firm_id: currentFirm,
       });
     } catch (error) {
       console.error(error);

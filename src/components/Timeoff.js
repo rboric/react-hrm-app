@@ -1,36 +1,30 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  Button,
-  ListGroup,
-  Form,
-  InputGroup,
-  Badge,
-  Table,
-  Tabs,
-  Tab,
-} from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Button, Table, Tabs, Tab } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+
 import { db } from "../firebase";
 import {
   getDocs,
-  getDoc,
   doc,
   setDoc,
-  addDoc,
+  query,
   collection,
+  where,
 } from "firebase/firestore";
 
 export default function Timeoff() {
-  const [loading, setLoading] = useState(false);
   const [requests, setRequests] = useState([]);
+  const { currentFirm } = useAuth();
 
   useEffect(() => {
     const getRequests = async () => {
       try {
-        setLoading(true);
-        const docs = await getDocs(collection(db, "requests"));
-        docs.forEach(async (doc) => {
+        const q = query(
+          collection(db, "requests"),
+          where("firm_id", "==", currentFirm)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (doc) => {
           const data = doc.data();
           setRequests((prevState) => [
             ...prevState,
@@ -48,16 +42,13 @@ export default function Timeoff() {
       } catch (error) {
         console.error(error);
       }
-
-      setLoading(false);
     };
 
     getRequests();
-  }, []);
+  }, [currentFirm]);
 
   const acceptRequest = async (id) => {
     try {
-      setLoading(true);
       await setDoc(
         doc(db, "requests", id),
         {
@@ -79,7 +70,6 @@ export default function Timeoff() {
   };
   const declineRequest = async (id) => {
     try {
-      setLoading(true);
       await setDoc(
         doc(db, "requests", id),
         {

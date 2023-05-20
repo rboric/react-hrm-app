@@ -1,3 +1,4 @@
+import Home from "./pages/Home";
 import RegisterFirm from "./auth-pages/RegisterFirm";
 import SignupAdmin from "./auth-pages/SignupAdmin";
 import SignupUser from "./auth-pages/SignupUser";
@@ -21,6 +22,7 @@ function App() {
       <Router>
         <AuthProvider>
           <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/register-firm" element={<RegisterFirm />} />
             <Route path="/signup-admin" element={<SignupAdmin />} />
             <Route path="/signup" element={<SignupUser />} />

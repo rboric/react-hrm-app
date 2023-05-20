@@ -17,6 +17,7 @@ export default function Tasks({
   deleteTask,
   updateTask,
   archiveTask,
+  createTimeline,
 }) {
   const { admin } = useAuth();
 
@@ -35,40 +36,54 @@ export default function Tasks({
     console.log(e);
   };
 
+  const handleDeleteTask = (uid) => {
+    deleteTask(uid);
+  };
+
+  const handleUpdateTask = (task) => {
+    handleShow();
+    setmodalTaskData(task);
+  };
+
+  const handleArchiveTask = (uid) => {
+    archiveTask(uid);
+  };
+
+  const handleSaveChanges = () => {
+    const uid = modalTaskData.uid;
+    const title = taskTitleRef.current.value;
+    const description = taskDescriptionRef.current.value;
+    updateTask(uid, title, description, importance);
+    handleClose();
+  };
+
   return (
     <div className="d-flex flex-wrap">
-      {taskSorted.map((el, i) => {
+      {taskSorted.map((task, i) => {
+        const { uid, title, description, assignedUsers, importance } = task;
         return (
-          !el.archive && (
+          !task.archive && (
             <div key={i} className="col-md-6">
               <Card>
                 <Card.Header>
-                  <Card.Title>{el.title}</Card.Title>
+                  <Card.Title>{title}</Card.Title>
                 </Card.Header>
-                <Card.Body className={el.importance}>
-                  <Card.Text>{el.description}</Card.Text>
+                <Card.Body className={`task-importance-${importance}`}>
+                  <Card.Text>{description}</Card.Text>
                   Assigned Users:
                   <ListGroup variant="flush">
-                    {el.assignedUsers.map((assignedUser, id) => {
-                      return (
-                        <ListGroup.Item key={id}>
-                          {assignedUser.email +
-                            " " +
-                            assignedUser.firstname +
-                            " " +
-                            assignedUser.lastname}
-                        </ListGroup.Item>
-                      );
-                    })}
+                    {assignedUsers.map((assignedUser, id) => (
+                      <ListGroup.Item key={id}>
+                        {`${assignedUser.email} ${assignedUser.firstname} ${assignedUser.lastname}`}
+                      </ListGroup.Item>
+                    ))}
                   </ListGroup>
-                  <Comments el={el}></Comments>
+                  <Comments el={task} createTimeline={createTimeline} />
                   <ListGroup horizontal>
                     {admin && (
                       <Button
                         disabled={loading}
-                        onClick={() => {
-                          deleteTask(el.uid);
-                        }}
+                        onClick={() => handleDeleteTask(uid)}
                       >
                         Delete Task
                       </Button>
@@ -76,10 +91,8 @@ export default function Tasks({
 
                     {admin && (
                       <Button
-                        onClick={() => {
-                          handleShow();
-                          setmodalTaskData(el);
-                        }}
+                        disabled={loading}
+                        onClick={() => handleUpdateTask(task)}
                       >
                         Update Task
                       </Button>
@@ -87,9 +100,7 @@ export default function Tasks({
                     {admin && (
                       <Button
                         disabled={loading}
-                        onClick={() => {
-                          archiveTask(el.uid);
-                        }}
+                        onClick={() => handleArchiveTask(uid)}
                       >
                         Archive Task
                       </Button>
@@ -106,10 +117,7 @@ export default function Tasks({
           <Modal.Title>{modalTaskData.title}</Modal.Title>
         </Modal.Header>
         <Form className="p-2">
-          <Form.Group
-            className="mb-3 w-100"
-            controlId="exampleForm.ControlInput1"
-          >
+          <Form.Group className="mb-3 w-100" controlId="taskTitle">
             <Form.Label>Task Title</Form.Label>
             <Form.Control
               defaultValue={modalTaskData.title}
@@ -117,7 +125,7 @@ export default function Tasks({
               ref={taskTitleRef}
             />
           </Form.Group>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3" controlId="taskDescription">
             <Form.Label>Task Description</Form.Label>
             <Form.Control
               as="textarea"
@@ -126,14 +134,7 @@ export default function Tasks({
               ref={taskDescriptionRef}
             />
           </Form.Group>
-          <Form.Group
-            className="mb-3 w-100"
-            controlId="exampleForm.ControlInput1"
-          ></Form.Group>
-          <Form.Group
-            className="mb-3 w-100"
-            controlId="exampleForm.ControlInput1"
-          >
+          <Form.Group className="mb-3 w-100" controlId="importanceDropdown">
             <Form.Label>Importance</Form.Label>
             <DropdownButton
               disabled={loading}
@@ -151,16 +152,9 @@ export default function Tasks({
             Close
           </Button>
           <Button
+            disabled={loading}
             variant="primary"
-            onClick={() => {
-              handleClose();
-              updateTask(
-                modalTaskData.uid,
-                taskTitleRef.current.value,
-                taskDescriptionRef.current.value,
-                importance
-              );
-            }}
+            onClick={handleSaveChanges}
           >
             Save Changes
           </Button>

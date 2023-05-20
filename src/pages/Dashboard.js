@@ -12,10 +12,15 @@ import {
   query,
   where,
   setDoc,
+  getDoc,
 } from "firebase/firestore";
 import Tasks from "../components/Tasks";
+import Timeline from "../components/Timeline";
 
 export default function Dashboard() {
+  const currentDate = new Date();
+  const formattedDateTime = currentDate.toLocaleString();
+
   // Auth
   const { currentUser, currentFirm, admin } = useAuth();
 
@@ -134,6 +139,7 @@ export default function Dashboard() {
     try {
       setLoading(true);
       await deleteDoc(doc(db, "tasks", id));
+      await createTimeline("delete");
       navigate(0);
     } catch (e) {
       console.log(e);
@@ -154,6 +160,7 @@ export default function Dashboard() {
         },
         { merge: true }
       );
+      await createTimeline("update");
       navigate(0);
     } catch (error) {
       console.error(error);
@@ -179,6 +186,7 @@ export default function Dashboard() {
         comments: [],
         isActive: false,
       });
+      await createTimeline("create");
       navigate(0);
     } catch (e) {
       console.error(e);
@@ -198,6 +206,7 @@ export default function Dashboard() {
         },
         { merge: true }
       );
+      await createTimeline("archive");
       navigate(0);
     } catch (error) {
       console.error(error);
@@ -211,62 +220,124 @@ export default function Dashboard() {
     console.log(e);
   };
 
+  const createTimeline = async (action) => {
+    const userRef = doc(db, "user", currentUser.uid);
+    const userDoc = await getDoc(userRef);
+    console.log(123);
+    try {
+      if (action === "create") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has added a new ${importance} importance task.`,
+          type: "Task",
+          timestamp: formattedDateTime,
+        });
+      }
+      if (action === "delete") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has deleted a task.`,
+          type: "Task",
+          timestamp: formattedDateTime,
+        });
+      }
+      if (action === "update") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has updated a task.`,
+          type: "Task",
+          timestamp: formattedDateTime,
+        });
+      }
+      if (action === "archive") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has archived a task.`,
+          type: "Task",
+          timestamp: formattedDateTime,
+        });
+      }
+      if (action === "comment") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has commented on a task.`,
+          type: "Task",
+          timestamp: formattedDateTime,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <div className="w-75 mx-auto">
-      <h2 className="text-center mb-4">Profile</h2>
-      <h2 className="text-center mb-4">{firm.firmname}</h2>
-      <strong>Email: </strong> {currentUser.email}
-      {admin && (
-        <div className="text-center mx-auto mt-5">
-          <Form onSubmit={createTask}>
-            <Form.Group id="firstname">
-              <Form.Label>Task Title</Form.Label>
-              <Form.Control type="firstname" ref={titleRef} required />
-            </Form.Group>
-            <Form.Group id="lastname">
-              <Form.Label>Task Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={5}
-                ref={descriptionRef}
-                required
-              />
-            </Form.Group>
-            <DropdownButton
-              disabled={loading}
-              title="Importance"
-              onSelect={handleSelect}
-            >
-              <Dropdown.Item eventKey="high">High</Dropdown.Item>
-              <Dropdown.Item eventKey="medium">Medium</Dropdown.Item>
-              <Dropdown.Item eventKey="low">Low</Dropdown.Item>
-            </DropdownButton>
-            {importance}
-            <DropdownButton disabled={loading} title="Assign">
-              {firmUsers.map((user, i) => {
-                return (
+    <div className="main-container">
+      <div className="w-75 mx-auto">
+        <h2 className="text-center mb-4">{firm.firmname}</h2>
+        <strong>Email: </strong> {currentUser.email}
+        {admin && (
+          <div className="text-center mx-auto mt-5">
+            <Form onSubmit={createTask}>
+              <Form.Group id="firstname">
+                <Form.Label>Task Title</Form.Label>
+                <Form.Control type="firstname" ref={titleRef} required />
+              </Form.Group>
+              <Form.Group id="lastname">
+                <Form.Label>Task Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={5}
+                  ref={descriptionRef}
+                  required
+                />
+              </Form.Group>
+              <DropdownButton
+                disabled={loading}
+                title="Importance"
+                onSelect={handleSelect}
+                id="dropdown-main"
+              >
+                <Dropdown.Item eventKey="high">High</Dropdown.Item>
+                <Dropdown.Item eventKey="medium">Medium</Dropdown.Item>
+                <Dropdown.Item eventKey="low">Low</Dropdown.Item>
+              </DropdownButton>
+              {importance}
+              <DropdownButton
+                disabled={loading}
+                title="Assign"
+                id="dropdown-main"
+              >
+                {firmUsers.map((user, i) => (
                   <Dropdown.Item
                     key={i}
-                    onClick={() => {
+                    onClick={() =>
                       assignUserForTask(
                         user.id,
                         user.firstname,
                         user.lastname,
                         user.email
-                      );
-                    }}
+                      )
+                    }
                   >
                     {user.firstname +
                       " " +
                       user.lastname +
                       ` ( ${user.email} )`}
                   </Dropdown.Item>
-                );
-              })}
-            </DropdownButton>
-            <div>
-              {assignedUsers.map((assignedUser, index) => {
-                return (
+                ))}
+              </DropdownButton>
+              <div>
+                {assignedUsers.map((assignedUser, index) => (
                   <p key={index}>
                     {assignedUser.firstname +
                       " " +
@@ -274,26 +345,30 @@ export default function Dashboard() {
                       " " +
                       assignedUser.email}
                   </p>
-                );
-              })}
-            </div>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Button disabled={loading} type="submit">
-              Create Task
-            </Button>
-          </Form>
-        </div>
-      )}
-      {taskData && (
-        <Tasks
-          taskData={taskData}
-          loading={loading}
-          assignedUsers={assignedUsers}
-          deleteTask={deleteTask}
-          updateTask={updateTask}
-          archiveTask={archiveTask}
-        ></Tasks>
-      )}
+                ))}
+              </div>
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Button disabled={loading} type="submit" className="btn-main">
+                Create Task
+              </Button>
+            </Form>
+          </div>
+        )}
+        {taskData && (
+          <Tasks
+            taskData={taskData}
+            loading={loading}
+            assignedUsers={assignedUsers}
+            deleteTask={deleteTask}
+            updateTask={updateTask}
+            archiveTask={archiveTask}
+            createTimeline={createTimeline}
+          ></Tasks>
+        )}
+      </div>
+      <div className="timeline">
+        <Timeline type={"Task"}></Timeline>
+      </div>
     </div>
   );
 }

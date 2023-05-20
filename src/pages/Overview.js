@@ -10,14 +10,20 @@ import {
   where,
   updateDoc,
   doc,
+  addDoc,
+  getDoc,
 } from "firebase/firestore";
 import Timeoff from "../components/Timeoff";
+import Timeline from "../components/Timeline";
 
 export default function Overview() {
+  const currentDate = new Date();
+  const formattedDateTime = currentDate.toLocaleString();
+
   const [show, setShow] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [users, setUsers] = useState([]);
-  const { currentFirm, admin } = useAuth();
+  const { currentUser, currentFirm, admin } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const userSalaryRef = useRef();
@@ -26,6 +32,26 @@ export default function Overview() {
 
   const handleShow = () => setShow(!show);
 
+  const createTimeline = async (action) => {
+    const userRef = doc(db, "user", currentUser.uid);
+    const userDoc = await getDoc(userRef);
+    console.log(123);
+    try {
+      if (action === "change") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has changed pay details for someone.`,
+          type: "Overview",
+          timestamp: formattedDateTime,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const updateUser = async (id, salary, hours) => {
     try {
       setLoading(true);
@@ -33,6 +59,7 @@ export default function Overview() {
         salary: salary,
         hours: hours,
       });
+      await createTimeline("change");
       navigate(0);
     } catch (error) {
       console.error(error);
@@ -170,6 +197,7 @@ export default function Overview() {
         </tbody>
       </Table>
       <Timeoff></Timeoff>
+      <Timeline type={"Overview"}></Timeline>
     </>
   );
 }

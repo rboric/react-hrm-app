@@ -11,6 +11,8 @@
     "firebase": "^9.9.0",
     "firebase-admin": "^11.0.1",
     "firebase-functions": "^3.22.0",
+    "mdb-react-ui-kit": "^6.0.0",
+    "moment": "^2.29.4",
     "node-sass": "^7.0.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",

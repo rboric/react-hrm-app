@@ -1,16 +1,14 @@
 import React, { useState, useRef } from "react";
 import { Button, ListGroup, Form, InputGroup, Badge } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { getDoc, doc, setDoc } from "firebase/firestore";
 
-export default function Comments({ el }) {
+export default function Comments({ el, createTimeline }) {
   const { currentUser } = useAuth();
   const [comments, setComments] = useState(el.comments);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const commentRef = useRef();
 
   const addCommentInput = async () => {
@@ -40,6 +38,7 @@ export default function Comments({ el }) {
         }
       );
       setComments(newComments);
+      await createTimeline("comment");
     } catch (error) {
       console.error(error);
     }
