@@ -143,6 +143,9 @@ a:hover {
   background-color: #ccf5ff;
 }
 
+.table-bordered > :not(caption) > * > * {
+  border: none;
+}
 @media (max-width: 768px) {
   .w-75 {
     width: 100%;

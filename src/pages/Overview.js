@@ -28,6 +28,8 @@ export default function Overview() {
   const navigate = useNavigate();
   const userSalaryRef = useRef();
   const userHoursRef = useRef();
+  const payrollTypeRef = useRef();
+  const [showSalaryInput, setShowSalaryInput] = useState();
   let counter = 0;
 
   const handleShow = () => setShow(!show);
@@ -35,7 +37,6 @@ export default function Overview() {
   const createTimeline = async (action) => {
     const userRef = doc(db, "user", currentUser.uid);
     const userDoc = await getDoc(userRef);
-    console.log(123);
     try {
       if (action === "change") {
         await addDoc(collection(db, "timeline"), {
@@ -52,13 +53,23 @@ export default function Overview() {
     }
   };
 
-  const updateUser = async (id, salary, hours) => {
+  const updateUser = async (id, salary, hours, payrollType) => {
     try {
       setLoading(true);
-      await updateDoc(doc(db, "user", id), {
-        salary: salary,
-        hours: hours,
-      });
+      if (payrollType === "Hourly") {
+        await updateDoc(doc(db, "user", id), {
+          salary: salary,
+          hours: hours,
+          payroll: payrollType,
+        });
+      }
+
+      if (payrollType === "Fixed") {
+        await updateDoc(doc(db, "user", id), {
+          salary: salary,
+          payroll: payrollType,
+        });
+      }
       await createTimeline("change");
       navigate(0);
     } catch (error) {
@@ -90,6 +101,7 @@ export default function Overview() {
             education: data.education,
             gender: data.gender,
             nationality: data.nationality,
+            payroll: data.payroll,
           },
         ]);
       });
@@ -108,10 +120,8 @@ export default function Overview() {
             <th>First Name</th>
             <th>Last Name</th>
             <th>E-mail</th>
-            <th>Education</th>
-            <th>Nationality</th>
-            <th>Gender</th>
-            <th>Salary/h</th>
+            <th>Payroll type</th>
+            <th>Fixed salary / Salary/h</th>
             <th>Hours/day</th>
             <th>Total</th>
             <th>Total Monthly</th>
@@ -126,13 +136,19 @@ export default function Overview() {
                 <td>{user.firstname}</td>
                 <td>{user.lastname}</td>
                 <td>{user.email}</td>
-                <td>{user.education}</td>
-                <td>{user.nationality}</td>
-                <td>{user.gender}</td>
-                <td>{user.salary}$/h</td>
-                <td>{user.hours}</td>
-                <td>{user.salary * user.hours}$</td>
-                <td>~ {23 * (user.salary * user.hours)}$</td>
+                <td>{user.payroll}</td>
+                <td style={{ textAlign: "center" }}>
+                  {user.payroll === "Fixed"
+                    ? user.salary + "$"
+                    : user.salary + "$/h"}
+                </td>
+                <td style={{ textAlign: "center" }}>{user.hours}</td>
+                <td style={{ textAlign: "center" }}>
+                  {user.salary * user.hours}$
+                </td>
+                <td style={{ textAlign: "center" }}>
+                  ~ {23 * (user.salary * user.hours)}$
+                </td>
                 {admin && (
                   <td>
                     <Button
@@ -150,7 +166,7 @@ export default function Overview() {
             );
           })}
           <Modal show={show} onHide={handleShow} animation={false}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton onHide={() => setShowSalaryInput("")}>
               <Modal.Title>{modalData.firstname}</Modal.Title>
             </Modal.Header>
             <Form className="p-2">
@@ -162,32 +178,66 @@ export default function Overview() {
                 <Form.Control disabled defaultValue={modalData.firstname} />
                 <Form.Label>Last name</Form.Label>
                 <Form.Control disabled defaultValue={modalData.lastname} />
-                <Form.Label>Salary</Form.Label>
-                <Form.Control
-                  defaultValue={modalData.salary}
-                  autoFocus
-                  ref={userSalaryRef}
-                />
-                <Form.Label>Hours</Form.Label>
-                <Form.Control
-                  defaultValue={modalData.hours}
-                  ref={userHoursRef}
-                />
+                <Form.Select
+                  ref={payrollTypeRef}
+                  onChange={() => {
+                    setShowSalaryInput(payrollTypeRef.current.value);
+                  }}
+                >
+                  <option hidden>Select the type of payroll</option>
+                  <option value="Hourly">Hourly</option>
+                  <option value="Fixed">Fixed</option>
+                </Form.Select>
+
+                {showSalaryInput === "Hourly" && (
+                  <>
+                    <Form.Label>Salary /h</Form.Label>
+                    <Form.Control
+                      defaultValue={modalData.salary}
+                      autoFocus
+                      ref={userSalaryRef}
+                    />
+                    <Form.Label>Hours</Form.Label>
+                    <Form.Control
+                      defaultValue={modalData.hours}
+                      ref={userHoursRef}
+                    />
+                  </>
+                )}
+                {showSalaryInput === "Fixed" && (
+                  <>
+                    <Form.Label>Set the fixed salary</Form.Label>
+                    <Form.Control
+                      defaultValue={modalData.salary}
+                      autoFocus
+                      ref={userSalaryRef}
+                    />
+                  </>
+                )}
               </Form.Group>
             </Form>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleShow}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  handleShow();
+                  setShowSalaryInput("");
+                }}
+              >
                 Close
               </Button>
               <Button
                 variant="primary"
-                onClick={() => {
+                onClick={async () => {
                   handleShow();
-                  updateUser(
-                    modalData.id,
-                    userSalaryRef.current.value,
-                    userHoursRef.current.value
-                  );
+                  const id = modalData.id;
+                  const salary = userSalaryRef.current.value;
+                  const hours =
+                    showSalaryInput === "Hourly"
+                      ? userHoursRef.current.value
+                      : "";
+                  const payrollType = payrollTypeRef.current.value;
+                  await updateUser(id, salary, hours, payrollType);
                 }}
               >
                 Save Changes

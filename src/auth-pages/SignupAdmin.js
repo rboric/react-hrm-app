@@ -34,12 +34,13 @@ export default function SignupAdmin() {
             email: emailRef.current.value,
             firm_id: parseInt(firmNumberRef.current.value),
             admin: true,
-            salary: 10,
+            salary: 7,
             hours: 7,
             address: "",
             nationality: "",
             education: "",
             gender: "",
+            payroll: "hourly",
           });
         }
       );

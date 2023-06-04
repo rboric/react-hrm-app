@@ -22,7 +22,7 @@ function App() {
       <Router>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Home />} />
+            {/* <Route path="/" element={<Home />} /> */}
             <Route path="/register-firm" element={<RegisterFirm />} />
             <Route path="/signup-admin" element={<SignupAdmin />} />
             <Route path="/signup" element={<SignupUser />} />
