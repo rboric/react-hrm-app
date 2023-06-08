@@ -20,7 +20,7 @@ export default function NavbarComp() {
   }
 
   return (
-    <Navbar collapseOnSelect expand="lg" className="bg-main-light-t">
+    <Navbar collapseOnSelect expand="lg" className="navbar-container">
       <Container>
         {error && <Alert variant="danger">{error}</Alert>}
         <Navbar.Brand href="#home">

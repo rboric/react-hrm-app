@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Alert, Form, DropdownButton, Dropdown } from "react-bootstrap";
+import {
+  Button,
+  ButtonGroup,
+  Alert,
+  Form,
+  DropdownButton,
+  Dropdown,
+} from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
@@ -281,18 +288,17 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="main-container">
-      <div className="w-75 mx-auto">
-        <h2 className="text-center mb-4">{firm.firmname}</h2>
-        <strong>Email: </strong> {currentUser.email}
+    <div className="dashboard-container">
+      <div className="firm-details">
+        <h2 className="firm-name">{firm.firmname}</h2>
         {admin && (
-          <div className="text-center mx-auto mt-5">
+          <div className="create-task-form">
             <Form onSubmit={createTask}>
-              <Form.Group id="firstname">
+              <Form.Group controlId="taskTitle">
                 <Form.Label>Task Title</Form.Label>
-                <Form.Control type="firstname" ref={titleRef} required />
+                <Form.Control type="text" ref={titleRef} required />
               </Form.Group>
-              <Form.Group id="lastname">
+              <Form.Group controlId="taskDescription">
                 <Form.Label>Task Description</Form.Label>
                 <Form.Control
                   as="textarea"
@@ -301,42 +307,54 @@ export default function Dashboard() {
                   required
                 />
               </Form.Group>
-              <DropdownButton
-                disabled={loading}
-                title="Importance"
-                onSelect={handleSelect}
-                id="dropdown-main"
-              >
-                <Dropdown.Item eventKey="high">High</Dropdown.Item>
-                <Dropdown.Item eventKey="medium">Medium</Dropdown.Item>
-                <Dropdown.Item eventKey="low">Low</Dropdown.Item>
-              </DropdownButton>
-              {importance}
-              <DropdownButton
-                disabled={loading}
-                title="Assign"
-                id="dropdown-main"
-              >
-                {firmUsers.map((user, i) => (
-                  <Dropdown.Item
-                    key={i}
-                    onClick={() =>
-                      assignUserForTask(
-                        user.id,
-                        user.firstname,
-                        user.lastname,
-                        user.email
-                      )
-                    }
-                  >
-                    {user.firstname +
-                      " " +
-                      user.lastname +
-                      ` ( ${user.email} )`}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-              <div>
+              <ButtonGroup className="button-container">
+                <DropdownButton
+                  disabled={loading}
+                  title="Importance"
+                  onSelect={handleSelect}
+                  id="dropdown-importance"
+                  variant="primary"
+                >
+                  <Dropdown.Item eventKey="high">High</Dropdown.Item>
+                  <Dropdown.Item eventKey="medium">Medium</Dropdown.Item>
+                  <Dropdown.Item eventKey="low">Low</Dropdown.Item>
+                </DropdownButton>
+
+                <DropdownButton
+                  disabled={loading}
+                  title="Assign"
+                  id="dropdown-assign"
+                  variant="primary"
+                >
+                  {firmUsers.map((user, i) => (
+                    <Dropdown.Item
+                      key={i}
+                      onClick={() =>
+                        assignUserForTask(
+                          user.id,
+                          user.firstname,
+                          user.lastname,
+                          user.email
+                        )
+                      }
+                    >
+                      {user.firstname +
+                        " " +
+                        user.lastname +
+                        ` ( ${user.email} )`}
+                    </Dropdown.Item>
+                  ))}
+                </DropdownButton>
+
+                <Button
+                  disabled={loading}
+                  type="submit"
+                  className="create-task-button"
+                >
+                  Create Task
+                </Button>
+              </ButtonGroup>
+              <div className="assigned-users">
                 {assignedUsers.map((assignedUser, index) => (
                   <p key={index}>
                     {assignedUser.firstname +
@@ -346,11 +364,11 @@ export default function Dashboard() {
                       assignedUser.email}
                   </p>
                 ))}
+                {error && <Alert variant="danger">{error}</Alert>}
               </div>
-              {error && <Alert variant="danger">{error}</Alert>}
-              <Button disabled={loading} type="submit" className="btn-main">
-                Create Task
-              </Button>
+              <div>
+                <p>{importance}</p>
+              </div>
             </Form>
           </div>
         )}
@@ -366,7 +384,7 @@ export default function Dashboard() {
           ></Tasks>
         )}
       </div>
-      <div className="timeline">
+      <div className="timeline-container">
         <Timeline type={"Task"}></Timeline>
       </div>
     </div>

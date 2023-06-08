@@ -1,4 +1,3 @@
-import Home from "./pages/Home";
 import RegisterFirm from "./auth-pages/RegisterFirm";
 import SignupAdmin from "./auth-pages/SignupAdmin";
 import SignupUser from "./auth-pages/SignupUser";
@@ -12,6 +11,7 @@ import NavbarComp from "./components/NavbarComp";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { useAuth } from "./contexts/AuthContext";
 
 function App() {

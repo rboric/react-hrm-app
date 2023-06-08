@@ -127,6 +127,7 @@ export default function Timeoff() {
                           onClick={() => {
                             acceptRequest(request.uid);
                           }}
+                          className="btn-main"
                         >
                           Y
                         </Button>{" "}
@@ -135,6 +136,7 @@ export default function Timeoff() {
                           onClick={() => {
                             declineRequest(request.uid);
                           }}
+                          className="btn-main"
                         >
                           X
                         </Button>

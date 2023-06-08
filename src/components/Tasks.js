@@ -57,32 +57,53 @@ export default function Tasks({
     handleClose();
   };
 
+  const getImportanceIndicator = (importance) => {
+    switch (importance) {
+      case "high":
+        return <span className="importance-indicator high">High</span>;
+      case "medium":
+        return <span className="importance-indicator medium">Medium</span>;
+      case "low":
+        return <span className="importance-indicator low">Low</span>;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="d-flex flex-wrap">
+    <div className="tasks-container">
       {taskSorted.map((task, i) => {
         const { uid, title, description, assignedUsers, importance } = task;
         return (
           !task.archive && (
-            <div key={i} className="col-md-6">
+            <div key={i} className="task-card">
               <Card>
                 <Card.Header>
-                  <Card.Title>{title}</Card.Title>
+                  <div className="task-header">
+                    <h5>{title}</h5>
+                    {getImportanceIndicator(importance)}
+                  </div>
                 </Card.Header>
-                <Card.Body className={`task-importance-${importance}`}>
+                <Card.Body>
                   <Card.Text>{description}</Card.Text>
-                  Assigned Users:
-                  <ListGroup variant="flush">
-                    {assignedUsers.map((assignedUser, id) => (
-                      <ListGroup.Item key={id}>
-                        {`${assignedUser.email} ${assignedUser.firstname} ${assignedUser.lastname}`}
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
+                  {task.assignedUsers.length > 0 && (
+                    <div className="assigned-users">
+                      <strong>Assigned Users:</strong>
+                      <ListGroup variant="flush">
+                        {assignedUsers.map((assignedUser, id) => (
+                          <ListGroup.Item key={id}>
+                            {`${assignedUser.email} ${assignedUser.firstname} ${assignedUser.lastname}`}
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
+                    </div>
+                  )}
                   <Comments el={task} createTimeline={createTimeline} />
-                  <ListGroup horizontal>
+                  <div className="task-buttons">
                     {admin && (
                       <Button
                         disabled={loading}
+                        variant="primary"
                         onClick={() => handleDeleteTask(uid)}
                       >
                         Delete Task
@@ -92,6 +113,7 @@ export default function Tasks({
                     {admin && (
                       <Button
                         disabled={loading}
+                        variant="primary"
                         onClick={() => handleUpdateTask(task)}
                       >
                         Update Task
@@ -100,12 +122,13 @@ export default function Tasks({
                     {admin && (
                       <Button
                         disabled={loading}
+                        variant="secondary"
                         onClick={() => handleArchiveTask(uid)}
                       >
                         Archive Task
                       </Button>
                     )}
-                  </ListGroup>
+                  </div>
                 </Card.Body>
               </Card>
             </div>
@@ -138,7 +161,7 @@ export default function Tasks({
             <Form.Label>Importance</Form.Label>
             <DropdownButton
               disabled={loading}
-              title={importance}
+              title={modalTaskData.importance}
               onSelect={handleSelect}
             >
               <Dropdown.Item eventKey="high">High</Dropdown.Item>

@@ -12,15 +12,19 @@ import {
   doc,
   addDoc,
   getDoc,
+  setDoc,
 } from "firebase/firestore";
 import Timeoff from "../components/Timeoff";
 import Timeline from "../components/Timeline";
+import Payroll from "../components/Payroll";
 
 export default function Overview() {
   const currentDate = new Date();
   const formattedDateTime = currentDate.toLocaleString();
 
   const [show, setShow] = useState(false);
+  const [showPayroll, setShowPayroll] = useState(false);
+  const [showOvertimeInfo, setShowOvertimeInfo] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [users, setUsers] = useState([]);
   const { currentUser, currentFirm, admin } = useAuth();
@@ -29,10 +33,18 @@ export default function Overview() {
   const userSalaryRef = useRef();
   const userHoursRef = useRef();
   const payrollTypeRef = useRef();
+
+  const payrollUserSalaryRef = useRef();
+  const payrollUserHoursRef = useRef();
+  const payrollUserOvertimeSalaryRef = useRef();
+  const payrollUserOveritimeHoursRef = useRef();
+  const payrollNextDateRef = useRef();
+
   const [showSalaryInput, setShowSalaryInput] = useState();
   let counter = 0;
 
   const handleShow = () => setShow(!show);
+  const handleShowPayroll = () => setShowPayroll(!showPayroll);
 
   const createTimeline = async (action) => {
     const userRef = doc(db, "user", currentUser.uid);
@@ -44,6 +56,36 @@ export default function Overview() {
           msg: `${
             userDoc.data().firstname + " " + userDoc.data().lastname
           } has changed pay details for someone.`,
+          type: "Overview",
+          timestamp: formattedDateTime,
+        });
+      }
+      if (action === "createPayroll") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has created payroll for someone.`,
+          type: "Overview",
+          timestamp: formattedDateTime,
+        });
+      }
+      if (action === "deletePayroll") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has deleted payroll for someone.`,
+          type: "Overview",
+          timestamp: formattedDateTime,
+        });
+      }
+      if (action === "submittedPayroll") {
+        await addDoc(collection(db, "timeline"), {
+          firm_id: currentFirm,
+          msg: `${
+            userDoc.data().firstname + " " + userDoc.data().lastname
+          } has submitted payroll for someone.`,
           type: "Overview",
           timestamp: formattedDateTime,
         });
@@ -67,6 +109,7 @@ export default function Overview() {
       if (payrollType === "Fixed") {
         await updateDoc(doc(db, "user", id), {
           salary: salary,
+          hours: hours,
           payroll: payrollType,
         });
       }
@@ -78,9 +121,51 @@ export default function Overview() {
     setLoading(false);
   };
 
+  const createPayroll = async (uid) => {
+    try {
+      setLoading(true);
+      const overtimeHours =
+        showOvertimeInfo && payrollUserOveritimeHoursRef.current
+          ? payrollUserOveritimeHoursRef.current.value
+          : 0;
+      const overtimeSalary =
+        showOvertimeInfo && payrollUserOvertimeSalaryRef.current
+          ? payrollUserOvertimeSalaryRef.current.value
+          : 0;
+
+      await addDoc(collection(db, "payroll"), {
+        firm_id: currentFirm,
+        user_id: uid,
+        date: payrollNextDateRef.current.value,
+        salary: payrollUserSalaryRef.current.value,
+        hours: payrollUserHoursRef.current.value,
+        overtime_salary: overtimeSalary,
+        overtime_hours: overtimeHours,
+        total:
+          payrollUserSalaryRef.current.value *
+            payrollUserHoursRef.current.value +
+          overtimeSalary * overtimeHours,
+        status: "active",
+      });
+      await setDoc(
+        doc(db, "user", uid),
+        {
+          payrollActive: true,
+        },
+        { merge: true }
+      );
+      await createTimeline("createPayroll");
+      navigate(0);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     async function getUsers() {
-      const docRef = collection(db, "/user");
+      const docRef = collection(db, "user");
       const currentFirmQuery = query(
         docRef,
         where("firm_id", "==", currentFirm)
@@ -102,6 +187,7 @@ export default function Overview() {
             gender: data.gender,
             nationality: data.nationality,
             payroll: data.payroll,
+            payrollActive: data.payrollActive,
           },
         ]);
       });
@@ -112,7 +198,7 @@ export default function Overview() {
   }, [currentFirm]);
 
   return (
-    <>
+    <div className="overview-container">
       <Table striped bordered hover size="lg">
         <thead>
           <tr>
@@ -123,8 +209,9 @@ export default function Overview() {
             <th>Payroll type</th>
             <th>Fixed salary / Salary/h</th>
             <th>Hours/day</th>
-            <th>Total</th>
-            <th>Total Monthly</th>
+            <th>Total per day</th>
+            <th>Estimated Total Monthly</th>
+            <th>Next payroll</th>
             {admin && <th>Edit</th>}
           </tr>
         </thead>
@@ -144,22 +231,49 @@ export default function Overview() {
                 </td>
                 <td style={{ textAlign: "center" }}>{user.hours}</td>
                 <td style={{ textAlign: "center" }}>
-                  {user.salary * user.hours}$
+                  {user.payroll === "Fixed"
+                    ? "~" + parseInt(user.salary / 23) + "$"
+                    : user.salary * user.hours + "$"}
                 </td>
                 <td style={{ textAlign: "center" }}>
-                  ~ {23 * (user.salary * user.hours)}$
+                  {" "}
+                  {user.payroll === "Fixed"
+                    ? "~" + user.salary
+                    : "~" + 23 * (user.salary * user.hours)}
+                  $
+                </td>
+                <td>
+                  <Payroll
+                    uid={user.id}
+                    user={user.firstname}
+                    createTimeline={createTimeline}
+                  ></Payroll>
                 </td>
                 {admin && (
                   <td>
-                    <Button
-                      disabled={loading}
-                      onClick={() => {
-                        handleShow();
-                        setModalData(user);
-                      }}
-                    >
-                      Change
-                    </Button>
+                    <div style={{ marginBottom: "10px" }}>
+                      <Button
+                        disabled={loading}
+                        onClick={() => {
+                          handleShow();
+                          setModalData(user);
+                        }}
+                      >
+                        Change
+                      </Button>
+                    </div>
+                    <div>
+                      <Button
+                        disabled={loading || user.payrollActive}
+                        variant={user.payrollActive ? "secondary" : "primary"}
+                        onClick={() => {
+                          handleShowPayroll();
+                          setModalData(user);
+                        }}
+                      >
+                        Change Payroll
+                      </Button>
+                    </div>
                   </td>
                 )}
               </tr>
@@ -244,10 +358,72 @@ export default function Overview() {
               </Button>
             </Modal.Footer>
           </Modal>
+          <Modal
+            show={showPayroll}
+            onHide={handleShowPayroll}
+            animation={false}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>
+                Editing next payroll for {modalData.firstname}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group className="mb-3">
+                <Form.Label>Date of the next payroll</Form.Label>
+                <Form.Control type="date" ref={payrollNextDateRef} />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Hours</Form.Label>
+                <Form.Control type="text" ref={payrollUserHoursRef} />
+                <Form.Label>Salary</Form.Label>
+                <Form.Control type="text" ref={payrollUserSalaryRef} />
+              </Form.Group>
+              <Button
+                onClick={() => {
+                  setShowOvertimeInfo(!showOvertimeInfo);
+                }}
+              >
+                Add overtime
+              </Button>
+              <div>
+                {showOvertimeInfo && (
+                  <Form.Group className="mb-3">
+                    <Form.Label>Overtime hours</Form.Label>
+                    <Form.Control
+                      type="text"
+                      ref={payrollUserOveritimeHoursRef}
+                    />
+                    <Form.Label>Overtime salary</Form.Label>
+                    <Form.Control
+                      type="text"
+                      ref={payrollUserOvertimeSalaryRef}
+                    />
+                  </Form.Group>
+                )}
+              </div>
+              <Form.Group>
+                <Form.Label>
+                  <b>Total: {}</b>
+                </Form.Label>
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleShowPayroll}>
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => createPayroll(modalData.id)}
+              >
+                Submit Payroll
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </tbody>
       </Table>
       <Timeoff></Timeoff>
       <Timeline type={"Overview"}></Timeline>
-    </>
+    </div>
   );
 }
