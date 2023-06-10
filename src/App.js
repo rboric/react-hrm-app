@@ -3,7 +3,7 @@ import SignupAdmin from "./auth-pages/SignupAdmin";
 import SignupUser from "./auth-pages/SignupUser";
 import Login from "./auth-pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Overview from "./pages/Overview";
+import Salary from "./pages/Salary";
 import Archive from "./pages/Archive";
 import Profile from "./pages/Profile";
 import ForgotPassword from "./auth-pages/ForgotPassword";
@@ -38,11 +38,11 @@ function App() {
             />
             {admin && (
               <Route
-                path="/overview"
+                path="/salary"
                 element={
                   <>
                     <NavbarComp />
-                    <Overview />
+                    <Salary />
                   </>
                 }
               />

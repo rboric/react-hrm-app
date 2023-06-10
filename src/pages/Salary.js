@@ -18,13 +18,14 @@ import Timeoff from "../components/Timeoff";
 import Timeline from "../components/Timeline";
 import Payroll from "../components/Payroll";
 
-export default function Overview() {
+export default function Salary() {
   const currentDate = new Date();
   const formattedDateTime = currentDate.toLocaleString();
 
   const [show, setShow] = useState(false);
   const [showPayroll, setShowPayroll] = useState(false);
   const [showOvertimeInfo, setShowOvertimeInfo] = useState(false);
+  const [showBonusInfo, setShowBonusInfo] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [users, setUsers] = useState([]);
   const { currentUser, currentFirm, admin } = useAuth();
@@ -38,6 +39,7 @@ export default function Overview() {
   const payrollUserHoursRef = useRef();
   const payrollUserOvertimeSalaryRef = useRef();
   const payrollUserOveritimeHoursRef = useRef();
+  const payrollUserBonusRef = useRef();
   const payrollNextDateRef = useRef();
 
   const [showSalaryInput, setShowSalaryInput] = useState();
@@ -133,6 +135,11 @@ export default function Overview() {
           ? payrollUserOvertimeSalaryRef.current.value
           : 0;
 
+      const bonusSalary =
+        showBonusInfo && payrollUserBonusRef.current
+          ? payrollUserBonusRef.current.value
+          : 0;
+
       await addDoc(collection(db, "payroll"), {
         firm_id: currentFirm,
         user_id: uid,
@@ -144,8 +151,10 @@ export default function Overview() {
         total:
           payrollUserSalaryRef.current.value *
             payrollUserHoursRef.current.value +
-          overtimeSalary * overtimeHours,
+          overtimeSalary * overtimeHours +
+          parseInt(bonusSalary),
         status: "active",
+        bonus: bonusSalary,
       });
       await setDoc(
         doc(db, "user", uid),
@@ -402,6 +411,23 @@ export default function Overview() {
                   </Form.Group>
                 )}
               </div>
+              <Form.Group>
+                <Button
+                  onClick={() => {
+                    setShowBonusInfo(!showBonusInfo);
+                  }}
+                >
+                  Add bonus
+                </Button>
+                <div>
+                  {showBonusInfo && (
+                    <Form.Group className="mb-3">
+                      <Form.Label>Bonus</Form.Label>
+                      <Form.Control type="text" ref={payrollUserBonusRef} />
+                    </Form.Group>
+                  )}
+                </div>
+              </Form.Group>
               <Form.Group>
                 <Form.Label>
                   <b>Total: {}</b>

@@ -96,6 +96,7 @@ export default function Payroll({ uid, user, createTimeline }) {
           total: data.total,
           user_id: data.user_id,
           status: data.status,
+          bonus: data.bonus,
         };
       });
       setPayroll(payrollData);
@@ -154,6 +155,10 @@ export default function Payroll({ uid, user, createTimeline }) {
                 readOnly
                 value={modalData.overtime_salary}
               />
+            </Form.Group>
+            <Form.Group controlId="overtime_salary">
+              <Form.Label>Bonus:</Form.Label>
+              <Form.Control type="text" readOnly value={modalData.bonus} />
             </Form.Group>
             <Form.Group controlId="total">
               <Form.Label>Total:</Form.Label>

@@ -33,9 +33,9 @@ export default function PayrollCard() {
           total: data.total,
           user_id: data.user_id,
           status: data.status,
+          bonus: data.bonus,
         };
       });
-      console.log(payrollData);
       setPayroll(payrollData);
     }
 
@@ -53,6 +53,7 @@ export default function PayrollCard() {
               <Card.Text>Salary: {pay.salary}</Card.Text>
               <Card.Text>Overtime hours: {pay.overtime_hours}</Card.Text>
               <Card.Text>Overtime salary: {pay.overtime_salary}</Card.Text>
+              <Card.Text>Overtime salary: {pay.bonus}</Card.Text>
             </Card.Body>
           </Card>
         );

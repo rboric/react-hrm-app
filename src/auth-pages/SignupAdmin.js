@@ -49,7 +49,7 @@ export default function SignupAdmin() {
     }
 
     setLoading(false);
-    navigate("/login-admin");
+    navigate("/login");
   }
 
   return (

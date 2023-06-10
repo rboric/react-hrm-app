@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Navbar, Nav, NavLink, Container, Alert } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  NavLink,
+  Container,
+  Alert,
+  NavDropdown,
+} from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -37,9 +44,13 @@ export default function NavbarComp() {
               Dashboard
             </Nav.Link>
             {admin && (
-              <Nav.Link as={Link} to="/overview">
-                Overview
-              </Nav.Link>
+              <NavDropdown title="Dropdown" id="nav-dropdown">
+                <NavDropdown.Item>
+                  <Nav.Link as={Link} to="/salary">
+                    Salary and payroll
+                  </Nav.Link>
+                </NavDropdown.Item>
+              </NavDropdown>
             )}
             <Nav.Link as={Link} to="/archive">
               Archive
