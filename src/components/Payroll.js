@@ -17,7 +17,7 @@ export default function Payroll({ uid, user, createTimeline }) {
   const [payroll, setPayroll] = useState([]);
   const [show, setShow] = useState(false);
   const [modalData, setModalData] = useState({});
-  const { currentUser, currentFirm, admin } = useAuth();
+  const { currentFirm } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -103,7 +103,7 @@ export default function Payroll({ uid, user, createTimeline }) {
     }
 
     getPayrolls();
-  }, []);
+  }, [currentFirm, uid]);
 
   return (
     <>
@@ -168,6 +168,7 @@ export default function Payroll({ uid, user, createTimeline }) {
         </Modal.Body>
         <Modal.Footer className="justify-content-between">
           <Button
+            disabled={loading}
             variant="danger"
             onClick={() => {
               deletePayroll(modalData.id);
@@ -183,7 +184,7 @@ export default function Payroll({ uid, user, createTimeline }) {
           <Button
             variant="primary"
             className="ml-2"
-            disabled={formattedDate !== modalData.date}
+            disabled={loading || formattedDate !== modalData.date}
             onClick={() => {
               submitPayroll(modalData.id);
             }}

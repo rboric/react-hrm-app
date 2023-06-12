@@ -52,7 +52,7 @@ export default function Archive() {
   return (
     <div className="tasks-container-archive">
       {taskData.map((task, i) => {
-        const { uid, title, description, assignedUsers, importance } = task;
+        const { title, description, assignedUsers, importance } = task;
         return (
           task.archive && (
             <div key={i} className="task-card-archive">
