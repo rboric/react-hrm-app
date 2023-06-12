@@ -44,11 +44,12 @@ export default function NavbarComp() {
               Dashboard
             </Nav.Link>
             {admin && (
-              <NavDropdown title="Dropdown" id="nav-dropdown">
-                <NavDropdown.Item>
-                  <Nav.Link as={Link} to="/salary">
-                    Salary and payroll
-                  </Nav.Link>
+              <NavDropdown title="Overview" id="nav-dropdown">
+                <NavDropdown.Item as={Link} to="/salary">
+                  Salary and payroll
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/worker-list">
+                  Worker list
                 </NavDropdown.Item>
               </NavDropdown>
             )}

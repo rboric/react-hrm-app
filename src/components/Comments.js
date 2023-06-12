@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import { getDoc, doc, setDoc } from "firebase/firestore";
 
-export default function Comments({ el, createTimeline }) {
+export default function Comments({ el, createTimeline, showComments }) {
   const { currentUser } = useAuth();
   const [comments, setComments] = useState(el.comments);
   const [show, setShow] = useState(false);
@@ -47,34 +47,39 @@ export default function Comments({ el, createTimeline }) {
 
   return (
     <>
-      <Button disabled={loading} onClick={addCommentInput}>
-        Comment
-      </Button>
-      <ListGroup>
-        {show && (
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-            <Form.Control
-              required
-              ref={commentRef}
-              as="textarea"
-              rows={1}
-              placeholder="Comment.."
-            />
+      {showComments && (
+        <>
+          <Button disabled={loading} onClick={addCommentInput}>
+            Comment
+          </Button>
+          <ListGroup>
             {show && (
-              <Button
-                disabled={loading}
-                onClick={() => {
-                  createComment(el.uid, commentRef.current.value);
-                  commentRef.current.value = "";
-                }}
-              >
-                &#8594;
-              </Button>
+              <InputGroup className="mb-3">
+                <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+                <Form.Control
+                  required
+                  ref={commentRef}
+                  as="textarea"
+                  rows={1}
+                  placeholder="Comment.."
+                />
+                {show && (
+                  <Button
+                    disabled={loading}
+                    onClick={() => {
+                      createComment(el.uid, commentRef.current.value);
+                      commentRef.current.value = "";
+                    }}
+                  >
+                    &#8594;
+                  </Button>
+                )}
+              </InputGroup>
             )}
-          </InputGroup>
-        )}
-      </ListGroup>
+          </ListGroup>
+        </>
+      )}
+      {!showComments && <>Comments: </>}
       <ListGroup variant="flush">
         {comments.map((comment, id) => {
           return (

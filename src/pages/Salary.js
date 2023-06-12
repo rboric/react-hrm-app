@@ -208,7 +208,7 @@ export default function Salary() {
 
   return (
     <div className="overview-container">
-      <Table striped bordered hover size="lg">
+      <Table striped bordered hover size="lg" responsive>
         <thead>
           <tr>
             <th>#</th>

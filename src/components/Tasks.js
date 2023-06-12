@@ -33,7 +33,6 @@ export default function Tasks({
 
   const handleSelect = (e) => {
     setImportance(e);
-    console.log(e);
   };
 
   const handleDeleteTask = (uid) => {
@@ -98,7 +97,11 @@ export default function Tasks({
                       </ListGroup>
                     </div>
                   )}
-                  <Comments el={task} createTimeline={createTimeline} />
+                  <Comments
+                    el={task}
+                    createTimeline={createTimeline}
+                    showComments={true}
+                  />
                   <div className="task-buttons">
                     {admin && (
                       <Button
@@ -161,7 +164,7 @@ export default function Tasks({
             <Form.Label>Importance</Form.Label>
             <DropdownButton
               disabled={loading}
-              title={modalTaskData.importance}
+              title={"Importance"}
               onSelect={handleSelect}
             >
               <Dropdown.Item eventKey="high">High</Dropdown.Item>
