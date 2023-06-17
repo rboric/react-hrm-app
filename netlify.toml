@@ -1,3 +1,8 @@
 [build]
-  command = "CI=false npm run build" # Replace "npm run build" with your actual build command
+  command = "CI=false npm run build"
   ignore_warnings = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
