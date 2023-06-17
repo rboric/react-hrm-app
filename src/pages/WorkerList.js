@@ -66,6 +66,7 @@ export default function WorkerList() {
                   <img
                     className="profile-pic"
                     src={user.profilePic ? user.profilePic : defaultAvatar}
+                    alt="pp"
                   />
                 </td>
                 <td>{user.firstname + " " + user.lastname}</td>
