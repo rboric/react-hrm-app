@@ -1,3 +1,3 @@
 [build]
-  command = "CI=true npm run build" # Replace "npm run build" with your actual build command
+  command = "CI=false npm run build" # Replace "npm run build" with your actual build command
   ignore_warnings = true
