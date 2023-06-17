@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import ForgotPassword from "./auth-pages/ForgotPassword";
 import NavbarComp from "./components/NavbarComp";
 import WorkerList from "./pages/WorkerList";
+import Documents from "./pages/Documents";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "react-bootstrap";
@@ -55,6 +56,15 @@ function App() {
                 <>
                   <NavbarComp />
                   <Archive />
+                </>
+              }
+            />
+            <Route
+              path="/documents"
+              element={
+                <>
+                  <NavbarComp />
+                  <Documents />
                 </>
               }
             />

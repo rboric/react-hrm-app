@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { db } from "../firebase";
 import { getDoc, doc, addDoc, collection } from "firebase/firestore";
@@ -27,8 +29,9 @@ export default function TimeoffRequest() {
         notes: notesRef.current.value,
         firm_id: currentFirm,
       });
+      toast.success("Timeoff request sent successfully!");
     } catch (error) {
-      console.error(error);
+      toast.error("Unknown error.");
     }
     setLoading(false);
   };

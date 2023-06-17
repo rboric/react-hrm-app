@@ -23,6 +23,8 @@ import {
 } from "firebase/firestore";
 import Tasks from "../components/Tasks";
 import Timeline from "../components/Timeline";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Dashboard() {
   const currentDate = new Date();
@@ -147,8 +149,10 @@ export default function Dashboard() {
       setLoading(true);
       await deleteDoc(doc(db, "tasks", id));
       await createTimeline("delete");
+      toast.success("Task successfully deleted!");
       navigate(0);
     } catch (e) {
+      toast.error("Unknown error for action: Delete task.");
       console.log(e);
       setError(JSON.stringify(e));
     }
@@ -168,9 +172,10 @@ export default function Dashboard() {
         { merge: true }
       );
       await createTimeline("update");
+      await toast.success("Task successfully updated!");
       navigate(0);
     } catch (error) {
-      console.error(error);
+      toast.error("Unknown error for action: Update task.");
       setError(JSON.stringify(error));
     }
     setLoading(false);
@@ -194,8 +199,10 @@ export default function Dashboard() {
         isActive: false,
       });
       await createTimeline("create");
+      toast.success("Task successfully created!");
       navigate(0);
     } catch (e) {
+      toast.error("Unknown error for action: Create task.");
       console.error(e);
       setError(JSON.stringify(e));
     }
@@ -214,8 +221,10 @@ export default function Dashboard() {
         { merge: true }
       );
       await createTimeline("archive");
+      toast.success("Task successfully archived!");
       navigate(0);
     } catch (error) {
+      toast.error("Unknown error for action: Archive task.");
       console.error(error);
       setError(error);
     } finally {
@@ -289,6 +298,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
+      <ToastContainer />
       <div className="firm-details">
         <h2 className="firm-name">{firm.firmname}</h2>
         {admin && (

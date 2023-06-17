@@ -3,6 +3,7 @@ import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Table } from "react-bootstrap";
+import defaultAvatar from "../assets/default-avatar.png";
 
 export default function WorkerList() {
   const [users, setUsers] = useState([]);
@@ -34,6 +35,7 @@ export default function WorkerList() {
             payroll: data.payroll,
             payrollActive: data.payrollActive,
             address: data.address,
+            profilePic: data.profilePic,
           },
         ]);
       });
@@ -47,6 +49,7 @@ export default function WorkerList() {
       <Table responsive>
         <thead>
           <tr>
+            <th>#</th>
             <th>Name</th>
             <th>E-mail</th>
             <th>Gender</th>
@@ -59,6 +62,12 @@ export default function WorkerList() {
           {users.map((user, i) => {
             return (
               <tr key={i}>
+                <td>
+                  <img
+                    className="profile-pic"
+                    src={user.profilePic ? user.profilePic : defaultAvatar}
+                  />
+                </td>
                 <td>{user.firstname + " " + user.lastname}</td>
                 <td>{user.email}</td>
                 <td>
