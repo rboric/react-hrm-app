@@ -323,7 +323,7 @@ li.nav-item button {
 
 .image-uploader {
   margin: 20px auto;
-  width: 40%;
+  width: 50%;
   height: 300px;
   border: 2px dashed #aaa;
   border-radius: 5px;
@@ -379,6 +379,70 @@ li.nav-item button {
 .preview-image {
   max-width: 100%;
   max-height: 200px;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Center the cards horizontally within the container */
+  gap: 10px;
+}
+
+.card-wrapper {
+  width: 20%;
+  padding: 10px;
+}
+
+.card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: 0.2s;
+}
+
+.card:hover {
+  opacity: 0.6;
+}
+
+.documents-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.card-title {
+  color: #aaa;
+}
+
+.card-link {
+  color: blue;
+}
+
+.card-image {
+  width: 50%;
+  height: auto;
+}
+
+.documents-button {
+  margin: auto;
+  width: 50%;
+}
+
+.documents-button button {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .image-uploader {
+    width: 95%;
+  }
+  .card-wrapper {
+    width: 100%;
+  }
 }
 
 /* Worker list */

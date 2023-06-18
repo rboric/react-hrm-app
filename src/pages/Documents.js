@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Card, Button } from "react-bootstrap";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db } from "../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { useAuth } from "../contexts/AuthContext";
+import documentDownload from "../assets/document-download.png";
 
 export default function Documents() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
+  const { currentFirm } = useAuth();
+  const [documents, setDocuments] = useState([]);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -38,8 +42,7 @@ export default function Documents() {
     const file = event.target.files[0];
     if (
       file &&
-      (file.type.startsWith("image/") ||
-        file.type === "application/pdf" ||
+      (file.type === "application/pdf" ||
         file.type ===
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
@@ -70,6 +73,8 @@ export default function Documents() {
         name: file.name,
         url: downloadURL,
         createdAt: new Date(),
+        fileType: "document",
+        firm_id: currentFirm,
       };
 
       await addDoc(collection(db, "files"), fileData);
@@ -79,6 +84,35 @@ export default function Documents() {
       toast.error("Error uploading file: ", error);
     }
   };
+
+  useEffect(() => {
+    const getDocuments = async () => {
+      const q = query(
+        collection(db, "files"),
+        where("firm_id", "==", parseInt(currentFirm)),
+        where("fileType", "==", "document")
+      );
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        setDocuments((prevState) => [
+          ...prevState,
+          {
+            id: doc.id,
+            createdAt: data.createdAt,
+            fileType: data.fileType,
+            name: data.name,
+            url: data.url,
+          },
+        ]);
+      });
+    };
+
+    getDocuments();
+
+    // eslint-disable-next-line
+  }, [currentFirm]);
 
   return (
     <>
@@ -111,18 +145,36 @@ export default function Documents() {
             />
           </Card.Body>
         </Card>
-        <div>
-          <Button
-            onClick={() => {
-              uploadFile(uploadedFile);
-              setUploadedFile(null);
-              setSelectedImage(null);
-            }}
-            disabled={!uploadedFile} // Disable the button when no file is selected
-          >
-            Upload
-          </Button>
-        </div>
+      </div>
+      <div className="documents-button">
+        <Button
+          onClick={() => {
+            uploadFile(uploadedFile);
+            setUploadedFile(null);
+            setSelectedImage(null);
+          }}
+          disabled={!uploadedFile} // Disable the button when no file is selected
+        >
+          Upload
+        </Button>
+      </div>
+      <div className="card-container">
+        {documents.map((doc, i) => (
+          <div key={i} className="card-wrapper">
+            <Card className="card">
+              <Card.Body className="documents-card-body">
+                <Card.Title className="card-title">{doc.name}</Card.Title>
+                <a href={doc.url} download className="card-link">
+                  <img
+                    src={documentDownload}
+                    alt={doc.name}
+                    className="card-image"
+                  />
+                </a>
+              </Card.Body>
+            </Card>
+          </div>
+        ))}
       </div>
     </>
   );

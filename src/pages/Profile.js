@@ -111,6 +111,7 @@ export default function Profile() {
         name: file.name,
         url: downloadURL,
         createdAt: new Date(),
+        firm_id: currentFirm,
       };
 
       await setDoc(

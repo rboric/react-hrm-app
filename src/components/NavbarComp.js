@@ -51,6 +51,9 @@ export default function NavbarComp() {
                 <NavDropdown.Item as={Link} to="/worker-list">
                   Worker list
                 </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/timeoff">
+                  Time off requests
+                </NavDropdown.Item>
               </NavDropdown>
             )}
             <NavDropdown title="Documents" id="nav-dropdown">

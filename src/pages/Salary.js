@@ -14,7 +14,6 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
-import Timeoff from "../components/Timeoff";
 import Timeline from "../components/Timeline";
 import Payroll from "../components/Payroll";
 
@@ -448,7 +447,6 @@ export default function Salary() {
           </Modal>
         </tbody>
       </Table>
-      <Timeoff></Timeoff>
       <Timeline type={"Overview"}></Timeline>
     </div>
   );

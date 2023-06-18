@@ -98,7 +98,7 @@ export default function Timeoff() {
         className="mb-3"
       >
         <Tab eventKey="pending" title="Pending Requests">
-          <Table striped bordered hover size="lg">
+          <Table striped bordered hover size="lg" responsive>
             <thead>
               <tr>
                 <th>Name</th>
@@ -149,7 +149,7 @@ export default function Timeoff() {
           </Table>
         </Tab>
         <Tab eventKey="accepted" title="Accepted requests">
-          <Table striped bordered hover size="lg">
+          <Table striped bordered hover size="lg" responsive>
             <thead>
               <tr>
                 <th>Name</th>
@@ -179,7 +179,7 @@ export default function Timeoff() {
           </Table>
         </Tab>
         <Tab eventKey="terminated" title="Terminated requests">
-          <Table striped bordered hover size="lg">
+          <Table striped bordered hover size="lg" responsive>
             <thead>
               <tr>
                 <th>Name</th>

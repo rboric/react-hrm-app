@@ -11,6 +11,7 @@ import ForgotPassword from "./auth-pages/ForgotPassword";
 import NavbarComp from "./components/NavbarComp";
 import WorkerList from "./pages/WorkerList";
 import Documents from "./pages/Documents";
+import Timeoff from "./pages/Timeoff";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "react-bootstrap";
@@ -50,6 +51,15 @@ function App() {
                 }
               />
             )}
+            <Route
+              path="/timeoff"
+              element={
+                <>
+                  <NavbarComp />
+                  <Timeoff />
+                </>
+              }
+            />
             <Route
               path="/archive"
               element={
