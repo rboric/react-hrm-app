@@ -161,7 +161,7 @@ export default function Documents() {
       <div className="card-container">
         {documents.map((doc, i) => (
           <div key={i} className="card-wrapper">
-            <Card className="card">
+            <Card className="documents-card">
               <Card.Body className="documents-card-body">
                 <Card.Title className="card-title">{doc.name}</Card.Title>
                 <a href={doc.url} download className="card-link">

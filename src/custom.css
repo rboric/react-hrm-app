@@ -393,7 +393,7 @@ li.nav-item button {
   padding: 10px;
 }
 
-.card {
+.documents-card {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -401,7 +401,7 @@ li.nav-item button {
   transition: 0.2s;
 }
 
-.card:hover {
+.documents-card:hover {
   opacity: 0.6;
 }
 
