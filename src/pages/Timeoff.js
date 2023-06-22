@@ -106,7 +106,7 @@ export default function Timeoff() {
                 <th>Reason</th>
                 <th>Notes</th>
                 <th>Date</th>
-                <th>Hours/h</th>
+
                 <th>Actions</th>
               </tr>
             </thead>
@@ -120,7 +120,7 @@ export default function Timeoff() {
                       <td>{request.type}</td>
                       <td>{request.notes}</td>
                       <td>{request.from + " - " + request.until}</td>
-                      <td></td>
+
                       <td>
                         <Button
                           variant="success"
@@ -157,7 +157,6 @@ export default function Timeoff() {
                 <th>Reason</th>
                 <th>Notes</th>
                 <th>Date</th>
-                <th>Hours/h</th>
               </tr>
             </thead>
             <tbody>
@@ -170,7 +169,6 @@ export default function Timeoff() {
                       <td>{request.type}</td>
                       <td>{request.notes}</td>
                       <td>{request.from + " - " + request.until}</td>
-                      <td></td>
                     </tr>
                   )
                 );
@@ -187,7 +185,6 @@ export default function Timeoff() {
                 <th>Reason</th>
                 <th>Notes</th>
                 <th>Date</th>
-                <th>Hours/h</th>
               </tr>
             </thead>
             <tbody>
@@ -200,7 +197,6 @@ export default function Timeoff() {
                       <td>{request.type}</td>
                       <td>{request.notes}</td>
                       <td>{request.from + " - " + request.until}</td>
-                      <td></td>
                     </tr>
                   )
                 );

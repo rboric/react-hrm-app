@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Documents() {
   const [uploadedFile, setUploadedFile] = useState(null);
-  const { currentFirm } = useAuth();
+  const { admin, currentFirm } = useAuth();
   const [documents, setDocuments] = useState([]);
   const navigate = useNavigate();
 
@@ -92,28 +92,30 @@ export default function Documents() {
   return (
     <>
       <ToastContainer />
-      <div className="documents-button-container">
-        <div className="documents-button">
-          <input
-            type="file"
-            id="file-input"
-            accept=".pdf,.doc,.docx,.txt"
-            onChange={handleFileInputChange}
-          />
-          <label htmlFor="file-input" className="select-document-label">
-            Select Document
-          </label>
-          <Button
-            onClick={() => {
-              uploadFile(uploadedFile);
-              setUploadedFile(null);
-            }}
-            disabled={!uploadedFile} // Disable the button when no file is selected
-          >
-            Upload
-          </Button>
+      {admin && (
+        <div className="documents-button-container">
+          <div className="documents-button">
+            <input
+              type="file"
+              id="file-input"
+              accept=".pdf,.doc,.docx,.txt"
+              onChange={handleFileInputChange}
+            />
+            <label htmlFor="file-input" className="select-document-label">
+              Select Document
+            </label>
+            <Button
+              onClick={() => {
+                uploadFile(uploadedFile);
+                setUploadedFile(null);
+              }}
+              disabled={!uploadedFile} // Disable the button when no file is selected
+            >
+              Upload
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
       <div className="card-container">
         {documents.map((doc, i) => (
           <div key={i} className="card-wrapper">

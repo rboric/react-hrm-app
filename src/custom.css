@@ -482,3 +482,15 @@ li.nav-item button {
   object-fit: cover; /* Adjust how the image is displayed */
   border-radius: 50%; /* Apply border-radius for a circular shape */
 }
+
+/* Rules */
+
+.rules-card {
+  width: 40%;
+}
+
+@media (max-width: 767px) {
+  .rules-card {
+    width: 100%;
+  }
+}

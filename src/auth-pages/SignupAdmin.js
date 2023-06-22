@@ -1,9 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getDocs, collection } from "firebase/firestore";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignupAdmin() {
   const emailRef = useRef();
@@ -13,18 +15,32 @@ export default function SignupAdmin() {
   const lastNameRef = useRef();
   const firmNumberRef = useRef();
   const { signup } = useAuth();
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [firms, setFirms] = useState([]);
+
+  useEffect(() => {
+    const getFirms = async () => {
+      const querySnapshot = await getDocs(collection(db, "firm"));
+      const firmIds = querySnapshot.docs.map((doc) => doc.data().id);
+      setFirms(firmIds);
+    };
+
+    getFirms();
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const firmId = parseInt(firmNumberRef.current.value);
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match");
+    if (!firms.includes(firmId)) {
+      return toast.error("Invalid firm ID");
     }
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      return toast.error("Passwords do not match");
+    }
+
     try {
-      setError("");
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value).then(
         (cred) => {
@@ -44,20 +60,30 @@ export default function SignupAdmin() {
           });
         }
       );
-    } catch (e) {
-      setError(e);
+      toast.success("Signed up successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } catch (error) {
+      setLoading(false);
+      if (error.code === "auth/weak-password") {
+        toast.error("Password should be at least 6 characters long");
+      } else if (error.code === "auth/email-already-in-use") {
+        toast.error("Email already exists");
+      } else {
+        toast.error("Failed to sign up. Please try again later.");
+      }
     }
 
     setLoading(false);
-    navigate("/login");
   }
 
   return (
     <>
+      <ToastContainer />
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group id="firstname">
               <Form.Label>First Name</Form.Label>

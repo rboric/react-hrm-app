@@ -106,7 +106,7 @@ export default function Rules() {
         <div className="d-flex flex-row flex-wrap justify-content-center align-items-stretch">
           {rules.map((rule, i) => {
             return (
-              <Card key={i} className="mx-3 my-3" style={{ width: "40%" }}>
+              <Card key={i} className="mx-3 my-3 rules-card">
                 <Card.Body className="d-flex flex-column">
                   <Card.Title>{rule.title}</Card.Title>
                   <Card.Text>

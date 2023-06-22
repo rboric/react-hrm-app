@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginAdmin() {
   const emailRef = useRef();
@@ -18,9 +20,21 @@ export default function LoginAdmin() {
     setLoading(true);
     try {
       await login(emailRef.current.value, passwordRef.current.value);
-      navigate("/dashboard");
+      toast.success("Successfully logged in!");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     } catch (error) {
-      console.error(error);
+      setLoading(false);
+      if (error.code === "auth/user-not-found") {
+        toast.error("Invalid email or password");
+      } else if (error.code === "auth/wrong-password") {
+        toast.error("Invalid email or password");
+      } else if (error.code === "auth/invalid-email") {
+        toast.error("Invalid email or password");
+      } else {
+        toast.error("Failed to log in. Please try again later.");
+      }
     }
 
     setLoading(false);
@@ -28,6 +42,7 @@ export default function LoginAdmin() {
 
   return (
     <>
+      <ToastContainer />
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
