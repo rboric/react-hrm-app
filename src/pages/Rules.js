@@ -15,7 +15,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function Rules() {
-  const { admin, currentUser, currentFirm } = useAuth();
+  const { admin, currentFirm } = useAuth();
   const [rules, setRules] = useState([]);
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const ruleTextRef = useRef();
@@ -74,18 +74,12 @@ export default function Rules() {
       );
       const querySnapshot = await getDocs(q);
 
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        setRules((prevState) => [
-          ...prevState,
-          {
-            id: doc.id,
-            text: data.text,
-            title: data.title,
-            firm_id: data.firm_id,
-          },
-        ]);
-      });
+      const fetchedRules = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setRules(fetchedRules);
     };
 
     getRules();
@@ -109,13 +103,15 @@ export default function Rules() {
             </Card.Body>
           </Card>
         )}
-        <div className="d-flex flex-row flex-wrap justify-content-center align-items-center">
+        <div className="d-flex flex-row flex-wrap justify-content-center align-items-stretch">
           {rules.map((rule, i) => {
             return (
-              <Card key={i} className="mx-3 my-3" style={{ width: "50%" }}>
-                <Card.Body>
+              <Card key={i} className="mx-3 my-3" style={{ width: "40%" }}>
+                <Card.Body className="d-flex flex-column">
                   <Card.Title>{rule.title}</Card.Title>
-                  <Card.Text>{rule.text}</Card.Text>
+                  <Card.Text>
+                    <pre style={{ whiteSpace: "pre-wrap" }}>{rule.text}</pre>
+                  </Card.Text>
                   {admin && (
                     <Button
                       variant="danger"
@@ -153,7 +149,7 @@ export default function Rules() {
               <Button variant="secondary" onClick={closeModal}>
                 Close
               </Button>
-              <Button variant="primary" type="submit">
+              <Button disabled={loading} variant="primary" type="submit">
                 Create Rule
               </Button>
             </Modal.Footer>

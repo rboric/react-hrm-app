@@ -384,8 +384,10 @@ li.nav-item button {
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Center the cards horizontally within the container */
+  justify-content: center;
   gap: 10px;
+  margin: 20px auto;
+  width: 80%;
 }
 
 .card-wrapper {
@@ -430,10 +432,37 @@ li.nav-item button {
 .documents-button {
   margin: auto;
   width: 50%;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.documents-button input[type="file"] {
+  display: none;
+}
+
+.documents-button label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #337ab7;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .documents-button button {
-  width: 100%;
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.select-document-label {
+  transition: 0.2s;
+}
+
+.select-document-label:hover {
+  opacity: 0.8;
 }
 
 @media (max-width: 767px) {

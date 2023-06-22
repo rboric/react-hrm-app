@@ -7,36 +7,13 @@ import { db } from "../firebase";
 import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "../contexts/AuthContext";
 import documentDownload from "../assets/document-download.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Documents() {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [dragging, setDragging] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const { currentFirm } = useAuth();
   const [documents, setDocuments] = useState([]);
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    setDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragging(false);
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    setDragging(false);
-
-    const file = event.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const navigate = useNavigate();
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -46,12 +23,7 @@ export default function Documents() {
         file.type ===
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setSelectedImage(reader.result);
-        setUploadedFile(file); // Set the file object in state
-      };
-      reader.readAsDataURL(file);
+      setUploadedFile(file); // Set the file object in state
     }
   };
 
@@ -80,6 +52,9 @@ export default function Documents() {
       await addDoc(collection(db, "files"), fileData);
 
       toast.success("File uploaded and stored successfully.");
+      setTimeout(() => {
+        navigate(0);
+      }, 1000);
     } catch (error) {
       toast.error("Error uploading file: ", error);
     }
@@ -116,47 +91,28 @@ export default function Documents() {
 
   return (
     <>
-      <div
-        className={`image-uploader ${dragging ? "dragging" : ""}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <ToastContainer />
-        <Card className="image-card">
-          <Card.Body className="image-card-body">
-            {selectedImage ? (
-              <img
-                src={selectedImage}
-                alt="Preview"
-                className="preview-image"
-              />
-            ) : (
-              <div className="drag-drop-area">
-                <p>Drag and drop an image here</p>
-                <p>or</p>
-              </div>
-            )}
-            <input
-              type="file"
-              id="file-input"
-              accept="image/*"
-              onChange={handleFileInputChange}
-            />
-          </Card.Body>
-        </Card>
-      </div>
-      <div className="documents-button">
-        <Button
-          onClick={() => {
-            uploadFile(uploadedFile);
-            setUploadedFile(null);
-            setSelectedImage(null);
-          }}
-          disabled={!uploadedFile} // Disable the button when no file is selected
-        >
-          Upload
-        </Button>
+      <ToastContainer />
+      <div className="documents-button-container">
+        <div className="documents-button">
+          <input
+            type="file"
+            id="file-input"
+            accept=".pdf,.doc,.docx,.txt"
+            onChange={handleFileInputChange}
+          />
+          <label htmlFor="file-input" className="select-document-label">
+            Select Document
+          </label>
+          <Button
+            onClick={() => {
+              uploadFile(uploadedFile);
+              setUploadedFile(null);
+            }}
+            disabled={!uploadedFile} // Disable the button when no file is selected
+          >
+            Upload
+          </Button>
+        </div>
       </div>
       <div className="card-container">
         {documents.map((doc, i) => (

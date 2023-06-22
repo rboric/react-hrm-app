@@ -33,13 +33,14 @@ export default function Salary() {
   const userSalaryRef = useRef();
   const userHoursRef = useRef();
   const payrollTypeRef = useRef();
+  const [totalValue, setTotalValue] = useState(0); // Add state for the total value
 
-  const payrollUserSalaryRef = useRef();
-  const payrollUserHoursRef = useRef();
-  const payrollUserOvertimeSalaryRef = useRef();
-  const payrollUserOveritimeHoursRef = useRef();
-  const payrollUserBonusRef = useRef();
-  const payrollNextDateRef = useRef();
+  const payrollUserSalaryRef = useRef(null);
+  const payrollUserHoursRef = useRef(null);
+  const payrollUserOvertimeSalaryRef = useRef(null);
+  const payrollUserOveritimeHoursRef = useRef(null);
+  const payrollUserBonusRef = useRef(null);
+  const payrollNextDateRef = useRef(null);
 
   const [showSalaryInput, setShowSalaryInput] = useState();
   let counter = 0;
@@ -204,6 +205,27 @@ export default function Salary() {
     getUsers();
     // eslint-disable-next-line
   }, [currentFirm]);
+
+  const calculateTotal = () => {
+    const hours = payrollUserHoursRef.current.value || 0;
+    const salary = payrollUserSalaryRef.current.value || 0;
+    const overtimeHours =
+      showOvertimeInfo && payrollUserOveritimeHoursRef.current
+        ? payrollUserOveritimeHoursRef.current.value || 0
+        : 0;
+    const overtimeSalary =
+      showOvertimeInfo && payrollUserOvertimeSalaryRef.current
+        ? payrollUserOvertimeSalaryRef.current.value || 0
+        : 0;
+    const bonusSalary =
+      showBonusInfo && payrollUserBonusRef.current
+        ? payrollUserBonusRef.current.value || 0
+        : 0;
+
+    const total =
+      salary * hours + overtimeSalary * overtimeHours + parseInt(bonusSalary);
+    setTotalValue(total);
+  };
 
   return (
     <div className="overview-container">
@@ -383,9 +405,21 @@ export default function Salary() {
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Hours</Form.Label>
-                <Form.Control type="text" ref={payrollUserHoursRef} />
+                <Form.Control
+                  type="text"
+                  ref={payrollUserHoursRef}
+                  onChange={() => {
+                    calculateTotal();
+                  }}
+                />
                 <Form.Label>Salary</Form.Label>
-                <Form.Control type="text" ref={payrollUserSalaryRef} />
+                <Form.Control
+                  type="text"
+                  ref={payrollUserSalaryRef}
+                  onChange={() => {
+                    calculateTotal();
+                  }}
+                />
               </Form.Group>
               <Button
                 onClick={() => {
@@ -401,11 +435,17 @@ export default function Salary() {
                     <Form.Control
                       type="text"
                       ref={payrollUserOveritimeHoursRef}
+                      onChange={() => {
+                        calculateTotal();
+                      }}
                     />
                     <Form.Label>Overtime salary</Form.Label>
                     <Form.Control
                       type="text"
                       ref={payrollUserOvertimeSalaryRef}
+                      onChange={() => {
+                        calculateTotal();
+                      }}
                     />
                   </Form.Group>
                 )}
@@ -422,14 +462,20 @@ export default function Salary() {
                   {showBonusInfo && (
                     <Form.Group className="mb-3">
                       <Form.Label>Bonus</Form.Label>
-                      <Form.Control type="text" ref={payrollUserBonusRef} />
+                      <Form.Control
+                        type="text"
+                        ref={payrollUserBonusRef}
+                        onChange={() => {
+                          calculateTotal();
+                        }}
+                      />
                     </Form.Group>
                   )}
                 </div>
               </Form.Group>
               <Form.Group>
                 <Form.Label>
-                  <b>Total: {}</b>
+                  <b>Total: {totalValue}</b>
                 </Form.Label>
               </Form.Group>
             </Modal.Body>
@@ -438,6 +484,7 @@ export default function Salary() {
                 Close
               </Button>
               <Button
+                disabled={loading}
                 variant="primary"
                 onClick={() => createPayroll(modalData.id)}
               >

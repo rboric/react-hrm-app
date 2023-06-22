@@ -62,7 +62,8 @@ export default function Profile() {
     setDragging(true);
   };
 
-  const handleDragLeave = () => {
+  const handleDragLeave = (event) => {
+    event.preventDefault();
     setDragging(false);
   };
 
@@ -75,6 +76,7 @@ export default function Profile() {
       const reader = new FileReader();
       reader.onload = () => {
         setSelectedImage(reader.result);
+        setUploadedFile(file); // Set the file object in state
       };
       reader.readAsDataURL(file);
     }
@@ -125,7 +127,7 @@ export default function Profile() {
 
       toast.success("Profile picture changed successfully.");
     } catch (error) {
-      toast.error("Error uploading file: ", error);
+      toast.error("Error uploading file: Unknown error");
     }
   };
 
@@ -149,19 +151,21 @@ export default function Profile() {
             ) : (
               <div className="profile-drag-drop-area">
                 <p>Drag and drop an image here</p>
-                <p>or</p>
               </div>
             )}
           </Card.Body>
         </Card>
       </div>
-      <input
-        type="file"
-        id="file-input"
-        accept="image/*"
-        onChange={handleFileInputChange}
-      />
-      <div>
+      <div style={{ textAlign: "center" }}>
+        {" "}
+        <input
+          type="file"
+          id="file-input"
+          accept="image/*"
+          onChange={handleFileInputChange}
+        />
+      </div>
+      <div style={{ textAlign: "center" }}>
         <Button
           onClick={() => {
             uploadFile(uploadedFile);
