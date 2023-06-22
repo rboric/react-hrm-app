@@ -150,7 +150,9 @@ export default function Dashboard() {
       await deleteDoc(doc(db, "tasks", id));
       await createTimeline("delete");
       toast.success("Task successfully deleted!");
-      navigate(0);
+      setTimeout(() => {
+        navigate(0);
+      }, 1000);
     } catch (e) {
       toast.error("Unknown error for action: Delete task.");
       console.log(e);
@@ -172,8 +174,10 @@ export default function Dashboard() {
         { merge: true }
       );
       await createTimeline("update");
-      await toast.success("Task successfully updated!");
-      navigate(0);
+      toast.success("Task successfully updated!");
+      setTimeout(() => {
+        navigate(0);
+      }, 1000);
     } catch (error) {
       toast.error("Unknown error for action: Update task.");
       setError(JSON.stringify(error));
@@ -200,7 +204,10 @@ export default function Dashboard() {
       });
       await createTimeline("create");
       toast.success("Task successfully created!");
-      navigate(0);
+
+      setTimeout(() => {
+        navigate(0);
+      }, 1000);
     } catch (e) {
       toast.error("Unknown error for action: Create task.");
       console.error(e);
@@ -222,7 +229,9 @@ export default function Dashboard() {
       );
       await createTimeline("archive");
       toast.success("Task successfully archived!");
-      navigate(0);
+      setTimeout(() => {
+        navigate(0);
+      }, 1000);
     } catch (error) {
       toast.error("Unknown error for action: Archive task.");
       console.error(error);
@@ -362,6 +371,18 @@ export default function Dashboard() {
                   className="create-task-button"
                 >
                   Create Task
+                </Button>
+                <Button
+                  disabled={loading}
+                  className="create-task-button"
+                  onClick={() => {
+                    titleRef.current.value = "";
+                    descriptionRef.current.value = "";
+                    setAssignedUsers([]);
+                    setImportance("");
+                  }}
+                >
+                  Cancel
                 </Button>
               </ButtonGroup>
               <div className="assigned-users">

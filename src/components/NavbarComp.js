@@ -63,6 +63,9 @@ export default function NavbarComp() {
               <NavDropdown.Item as={Link} to="/archive">
                 Archive
               </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/rules">
+                Rules
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link as={Link} to="/profile">
               Profile

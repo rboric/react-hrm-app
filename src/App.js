@@ -12,6 +12,7 @@ import NavbarComp from "./components/NavbarComp";
 import WorkerList from "./pages/WorkerList";
 import Documents from "./pages/Documents";
 import Timeoff from "./pages/Timeoff";
+import Rules from "./pages/Rules";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "react-bootstrap";
@@ -75,6 +76,15 @@ function App() {
                 <>
                   <NavbarComp />
                   <Documents />
+                </>
+              }
+            />
+            <Route
+              path="/rules"
+              element={
+                <>
+                  <NavbarComp />
+                  <Rules />
                 </>
               }
             />
