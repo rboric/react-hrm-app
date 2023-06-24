@@ -56,18 +56,20 @@ export default function Timeoff() {
         },
         { merge: true }
       );
-      const updatedRequests = requests.map((request) => {
-        if (request.uid === id) {
-          return { ...request, status: "Accepted" };
-        } else {
-          return request;
-        }
+      setRequests((prevRequests) => {
+        return prevRequests.map((request) => {
+          if (request.uid === id) {
+            return { ...request, status: "Accepted" };
+          } else {
+            return request;
+          }
+        });
       });
-      setRequests(updatedRequests);
     } catch (error) {
       console.error(error);
     }
   };
+
   const declineRequest = async (id) => {
     try {
       await setDoc(
@@ -77,14 +79,15 @@ export default function Timeoff() {
         },
         { merge: true }
       );
-      const updatedRequests = requests.map((request) => {
-        if (request.uid === id) {
-          return { ...request, status: "Declined" };
-        } else {
-          return request;
-        }
+      setRequests((prevRequests) => {
+        return prevRequests.map((request) => {
+          if (request.uid === id) {
+            return { ...request, status: "Declined" };
+          } else {
+            return request;
+          }
+        });
       });
-      setRequests(updatedRequests);
     } catch (error) {
       console.error(error);
     }
@@ -98,14 +101,14 @@ export default function Timeoff() {
         className="mb-3"
       >
         <Tab eventKey="pending" title="Pending Requests">
-          <Table striped bordered hover size="lg" responsive>
+          <Table hover size="lg" responsive className="hrm-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Reason</th>
-                <th>Notes</th>
-                <th>Date</th>
+                <th className="header-cell">Name</th>
+                <th className="header-cell">Status</th>
+                <th className="header-cell">Reason</th>
+                <th className="header-cell">Notes</th>
+                <th className="header-cell">Date</th>
 
                 <th>Actions</th>
               </tr>
@@ -149,14 +152,14 @@ export default function Timeoff() {
           </Table>
         </Tab>
         <Tab eventKey="accepted" title="Accepted requests">
-          <Table striped bordered hover size="lg" responsive>
+          <Table hover size="lg" responsive className="hrm-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Reason</th>
-                <th>Notes</th>
-                <th>Date</th>
+                <th className="header-cell">Name</th>
+                <th className="header-cell">Status</th>
+                <th className="header-cell">Reason</th>
+                <th className="header-cell">Notes</th>
+                <th className="header-cell">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -165,7 +168,7 @@ export default function Timeoff() {
                   request.status === "Accepted" && (
                     <tr key={i}>
                       <td>{request.user + " "}</td>
-                      <td>{request.status}</td>
+                      <td style={{ color: "green" }}>{request.status}</td>
                       <td>{request.type}</td>
                       <td>{request.notes}</td>
                       <td>{request.from + " - " + request.until}</td>
@@ -177,14 +180,14 @@ export default function Timeoff() {
           </Table>
         </Tab>
         <Tab eventKey="terminated" title="Terminated requests">
-          <Table striped bordered hover size="lg" responsive>
+          <Table hover size="lg" responsive className="hrm-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Reason</th>
-                <th>Notes</th>
-                <th>Date</th>
+                <th className="header-cell">Name</th>
+                <th className="header-cell">Status</th>
+                <th className="header-cell">Reason</th>
+                <th className="header-cell">Notes</th>
+                <th className="header-cell">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -193,7 +196,7 @@ export default function Timeoff() {
                   request.status === "Declined" && (
                     <tr key={i}>
                       <td>{request.user + " "}</td>
-                      <td>{request.status}</td>
+                      <td style={{ color: "red" }}>{request.status}</td>
                       <td>{request.type}</td>
                       <td>{request.notes}</td>
                       <td>{request.from + " - " + request.until}</td>

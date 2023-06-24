@@ -52,7 +52,8 @@ export default function Tasks({
     const uid = modalTaskData.uid;
     const title = taskTitleRef.current.value;
     const description = taskDescriptionRef.current.value;
-    updateTask(uid, title, description, importance);
+    const editedImportance = importance ? importance : modalTaskData.importance;
+    updateTask(uid, title, description, editedImportance);
     handleClose();
   };
 
@@ -64,6 +65,21 @@ export default function Tasks({
         return <span className="importance-indicator medium">Medium</span>;
       case "low":
         return <span className="importance-indicator low">Low</span>;
+      default:
+        return null;
+    }
+  };
+
+  const getImportanceIndicatorModal = (importance) => {
+    switch (importance) {
+      case "high":
+        return <div className="task-modal-importance-indicator high">High</div>;
+      case "medium":
+        return (
+          <div className="task-modal-importance-indicator medium">Medium</div>
+        );
+      case "low":
+        return <div className="task-modal-importance-indicator low">Low</div>;
       default:
         return null;
     }
@@ -86,7 +102,7 @@ export default function Tasks({
                 <Card.Body>
                   <Card.Text>{description}</Card.Text>
                   {task.assignedUsers.length > 0 && (
-                    <div className="assigned-users">
+                    <div className="task-assigned-users">
                       <strong>Assigned Users:</strong>
                       <ListGroup variant="flush">
                         {assignedUsers.map((assignedUser, id) => (
@@ -160,21 +176,39 @@ export default function Tasks({
               ref={taskDescriptionRef}
             />
           </Form.Group>
-          <Form.Group className="mb-3 w-100" controlId="importanceDropdown">
-            <Form.Label>Importance</Form.Label>
+          <Form.Group className="mb-2 w-100" controlId="importanceDropdown">
             <DropdownButton
+              style={{ display: "inline", width: "100%" }}
               disabled={loading}
               title={"Importance"}
               onSelect={handleSelect}
+              className="importance-button-modal"
             >
               <Dropdown.Item eventKey="high">High</Dropdown.Item>
               <Dropdown.Item eventKey="medium">Medium</Dropdown.Item>
               <Dropdown.Item eventKey="low">Low</Dropdown.Item>
             </DropdownButton>
+            <div
+              className="dashboard-importance-indicator"
+              style={{
+                display: "inline",
+                marginLeft: "10px",
+              }}
+            >
+              {getImportanceIndicatorModal(
+                importance ? importance : modalTaskData.importance
+              )}
+            </div>
           </Form.Group>
         </Form>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              handleClose();
+              setImportance(null);
+            }}
+          >
             Close
           </Button>
           <Button

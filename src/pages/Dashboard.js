@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Button,
   ButtonGroup,
-  Alert,
   Form,
   DropdownButton,
   Dropdown,
+  Card,
 } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +38,6 @@ export default function Dashboard() {
 
   // State
   const [firm, setFirm] = useState([]);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Ref
@@ -129,9 +128,8 @@ export default function Dashboard() {
         return assignedUser.id === id;
       })
     ) {
-      setError("This user is already added to assigned users list!");
+      toast.error("This user is already added to assigned users list!");
     } else {
-      setError("");
       setAssignedUsers((prevState) => [
         ...prevState,
         {
@@ -156,7 +154,6 @@ export default function Dashboard() {
     } catch (e) {
       toast.error("Unknown error for action: Delete task.");
       console.log(e);
-      setError(JSON.stringify(e));
     }
     setLoading(false);
   };
@@ -180,7 +177,6 @@ export default function Dashboard() {
       }, 1000);
     } catch (error) {
       toast.error("Unknown error for action: Update task.");
-      setError(JSON.stringify(error));
     }
     setLoading(false);
   };
@@ -189,7 +185,6 @@ export default function Dashboard() {
     e.preventDefault();
 
     try {
-      setError("");
       setLoading(true);
       await addDoc(collection(db, "tasks"), {
         title: titleRef.current.value,
@@ -211,7 +206,6 @@ export default function Dashboard() {
     } catch (e) {
       toast.error("Unknown error for action: Create task.");
       console.error(e);
-      setError(JSON.stringify(e));
     }
 
     setLoading(false);
@@ -235,7 +229,6 @@ export default function Dashboard() {
     } catch (error) {
       toast.error("Unknown error for action: Archive task.");
       console.error(error);
-      setError(error);
     } finally {
       setLoading(false);
     }
@@ -305,6 +298,21 @@ export default function Dashboard() {
     }
   };
 
+  const getImportanceIndicator = (importance) => {
+    switch (importance) {
+      case "high":
+        return <div className="dashboard-importance-indicator high">High</div>;
+      case "medium":
+        return (
+          <div className="dashboard-importance-indicator medium">Medium</div>
+        );
+      case "low":
+        return <div className="dashboard-importance-indicator low">Low</div>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <ToastContainer />
@@ -365,16 +373,12 @@ export default function Dashboard() {
                   ))}
                 </DropdownButton>
 
-                <Button
-                  disabled={loading}
-                  type="submit"
-                  className="create-task-button"
-                >
+                <Button variant="primary" disabled={loading} type="submit">
                   Create Task
                 </Button>
                 <Button
+                  variant="secondary"
                   disabled={loading}
-                  className="create-task-button"
                   onClick={() => {
                     titleRef.current.value = "";
                     descriptionRef.current.value = "";
@@ -385,20 +389,25 @@ export default function Dashboard() {
                   Cancel
                 </Button>
               </ButtonGroup>
-              <div className="assigned-users">
-                {assignedUsers.map((assignedUser, index) => (
-                  <p key={index}>
-                    {assignedUser.firstname +
-                      " " +
-                      assignedUser.lastname +
-                      " " +
-                      assignedUser.email}
-                  </p>
-                ))}
-                {error && <Alert variant="danger">{error}</Alert>}
+              <div className="importance">
+                <h4 style={{ marginTop: "10px" }}>Importance</h4>
+
+                {getImportanceIndicator(importance)}
               </div>
-              <div>
-                <p>{importance}</p>
+              <div className="assigned-users" style={{ marginTop: "10px" }}>
+                {assignedUsers.length === 0 && <p>No assigned users.</p>}
+                {assignedUsers.map((assignedUser, index) => (
+                  <Card key={index} className="user-card">
+                    <Card.Body>
+                      <Card.Title>
+                        {assignedUser.firstname} {assignedUser.lastname}
+                      </Card.Title>
+                      <Card.Text className="email">
+                        {assignedUser.email}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))}
               </div>
             </Form>
           </div>

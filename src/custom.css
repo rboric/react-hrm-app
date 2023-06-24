@@ -31,6 +31,10 @@ body {
   margin-right: 10px;
 }
 
+.button-container {
+  margin-top: 10px;
+}
+
 .firm-details {
   width: 100%;
   padding: 20px;
@@ -46,12 +50,7 @@ body {
   margin-top: 20px;
 }
 
-.create-task-button {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.assigned-users p {
+.task-assigned-users p {
   margin: 5px 0;
 }
 
@@ -113,7 +112,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.assigned-users {
+.task-assigned-users {
   margin-top: 10px;
 }
 
@@ -135,6 +134,57 @@ body {
   font-size: 12px;
   font-weight: bold;
   margin-left: 8px;
+}
+
+.dashboard-importance-indicator {
+  transition: 0.1s;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.dashboard-importance-indicator.high {
+  background-color: #e70c0c;
+  color: #ffffff;
+}
+
+.dashboard-importance-indicator.medium {
+  background-color: #ffbb2a;
+  color: #ffffff;
+}
+
+.dashboard-importance-indicator.low {
+  background-color: #03a9f4;
+  color: #ffffff;
+}
+
+.task-modal-importance-indicator {
+  transition: 0.1s;
+  text-align: center;
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.task-modal-importance-indicator.high {
+  background-color: #e70c0c;
+  color: #ffffff;
+}
+
+.task-modal-importance-indicator.medium {
+  background-color: #ffbb2a;
+  color: #ffffff;
+}
+
+.task-modal-importance-indicator.low {
+  background-color: #03a9f4;
+  color: #ffffff;
 }
 
 .importance-indicator.high {
@@ -476,11 +526,37 @@ li.nav-item button {
 
 /* Worker list */
 
-.profile-pic {
-  width: 50px; /* Set the desired width */
-  height: 50px; /* Set the desired height */
-  object-fit: cover; /* Adjust how the image is displayed */
-  border-radius: 50%; /* Apply border-radius for a circular shape */
+.hrm-table th,
+.hrm-table td {
+  text-align: center;
+  vertical-align: middle;
+  color: #555555;
+}
+
+.hrm-table th {
+  padding: 20px;
+  border-bottom-width: 2px;
+}
+
+.hrm-table .header-cell {
+  font-weight: bold;
+  color: #555555;
+}
+
+.hrm-table .profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.hrm-table tbody tr:hover {
+  background-color: #e3ecff;
+  transition: 0.1s;
+}
+
+.hrm-table .header-cell .fixed-salary-text {
+  font-weight: bold;
+  color: rgb(70, 144, 255);
 }
 
 /* Rules */
@@ -493,4 +569,51 @@ li.nav-item button {
   .rules-card {
     width: 100%;
   }
+}
+
+.assigned-users {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.user-card {
+  width: 200px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #007bff;
+}
+
+.user-card .card-body {
+  padding: 1.25rem;
+}
+
+.user-card .card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.user-card .email {
+  color: #666;
+}
+
+.progress-bar-container {
+  height: 20px;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #17a2b8;
+}
+
+.progress-label {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #17a2b8;
 }

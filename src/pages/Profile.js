@@ -21,6 +21,10 @@ export default function Profile() {
   const addressRef = useRef();
   const nationalityRef = useRef();
   const educationRef = useRef();
+  const employmentStartDateRef = useRef();
+  const phoneNumberRef = useRef();
+  const preferredLanguageRef = useRef();
+  const communicationPreferenceRef = useRef();
 
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +51,10 @@ export default function Profile() {
           nationality: nationalityRef.current.value,
           education: educationRef.current.value,
           gender: userData.gender,
+          employment_start: employmentStartDateRef.current.value,
+          phone_number: phoneNumberRef.current.value,
+          preferred_language: preferredLanguageRef.current.value,
+          communication_preference: communicationPreferenceRef.current.value,
         },
         { merge: true }
       );
@@ -203,6 +211,25 @@ export default function Profile() {
                   defaultValue={userData.lastname}
                 />
               </Form.Group>
+              <Form.Group controlId="formGender">
+                <Form.Label>Gender</Form.Label>
+                <div className="gender-radio-group">
+                  <Form.Check
+                    label="Male"
+                    name="group1"
+                    type="radio"
+                    value="Male"
+                    onChange={(e) => (userData.gender = e.target.value)}
+                  />
+                  <Form.Check
+                    label="Female"
+                    name="group1"
+                    type="radio"
+                    value="Female"
+                    onChange={(e) => (userData.gender = e.target.value)}
+                  />
+                </div>
+              </Form.Group>
               <Form.Group controlId="formAddress">
                 <Form.Label>Address</Form.Label>
                 <Form.Control
@@ -230,24 +257,45 @@ export default function Profile() {
                   placeholder="Education..."
                 />
               </Form.Group>
-              <Form.Group controlId="formGender">
-                <Form.Label>Gender</Form.Label>
-                <div className="gender-radio-group">
-                  <Form.Check
-                    label="Male"
-                    name="group1"
-                    type="radio"
-                    value="Male"
-                    onChange={(e) => (userData.gender = e.target.value)}
-                  />
-                  <Form.Check
-                    label="Female"
-                    name="group1"
-                    type="radio"
-                    value="Female"
-                    onChange={(e) => (userData.gender = e.target.value)}
-                  />
-                </div>
+              <Form.Group controlId="formEmploymentStartDate">
+                <Form.Label>Employment start date</Form.Label>
+                <Form.Control
+                  type="date"
+                  ref={employmentStartDateRef}
+                  defaultValue={userData.employment_start}
+                />
+              </Form.Group>
+              <Form.Group controlId="formPhoneNumber">
+                <Form.Label>Phone number</Form.Label>
+                <Form.Control
+                  type="text"
+                  ref={phoneNumberRef}
+                  defaultValue={userData.phone_number}
+                />
+              </Form.Group>
+              <Form.Group controlId="formPreferredLanguage">
+                <Form.Label>Preferred language</Form.Label>
+                <Form.Control
+                  type="text"
+                  ref={preferredLanguageRef}
+                  defaultValue={userData.preferred_language}
+                />
+              </Form.Group>
+              <Form.Group controlId="formCommunicationPreference">
+                <Form.Label>
+                  Communication Preference
+                  <small className="text-muted">
+                    <i>
+                      &nbsp;(E-mail, phone, sms or text messages, in-person
+                      meetings, etc..)
+                    </i>
+                  </small>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  ref={communicationPreferenceRef}
+                  defaultValue={userData.communication_preference}
+                />
               </Form.Group>
               <Button
                 onClick={() => {

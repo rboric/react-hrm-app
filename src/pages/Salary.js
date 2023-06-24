@@ -16,6 +16,8 @@ import {
 } from "firebase/firestore";
 import Timeline from "../components/Timeline";
 import Payroll from "../components/Payroll";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Salary() {
   const currentDate = new Date();
@@ -48,7 +50,7 @@ export default function Salary() {
   const handleShow = () => setShow(!show);
   const handleShowPayroll = () => setShowPayroll(!showPayroll);
 
-  const createTimeline = async (action) => {
+  const createTimeline = async (action, user) => {
     const userRef = doc(db, "user", currentUser.uid);
     const userDoc = await getDoc(userRef);
     try {
@@ -57,7 +59,7 @@ export default function Salary() {
           firm_id: currentFirm,
           msg: `${
             userDoc.data().firstname + " " + userDoc.data().lastname
-          } has changed pay details for someone.`,
+          } has changed pay details for ${user}.`,
           type: "Overview",
           timestamp: formattedDateTime,
         });
@@ -67,7 +69,7 @@ export default function Salary() {
           firm_id: currentFirm,
           msg: `${
             userDoc.data().firstname + " " + userDoc.data().lastname
-          } has created payroll for someone.`,
+          } has created payroll for ${user}.`,
           type: "Overview",
           timestamp: formattedDateTime,
         });
@@ -77,7 +79,7 @@ export default function Salary() {
           firm_id: currentFirm,
           msg: `${
             userDoc.data().firstname + " " + userDoc.data().lastname
-          } has deleted payroll for someone.`,
+          } has deleted payroll for ${user}.`,
           type: "Overview",
           timestamp: formattedDateTime,
         });
@@ -87,7 +89,7 @@ export default function Salary() {
           firm_id: currentFirm,
           msg: `${
             userDoc.data().firstname + " " + userDoc.data().lastname
-          } has submitted payroll for someone.`,
+          } has submitted payroll for ${user}.`,
           type: "Overview",
           timestamp: formattedDateTime,
         });
@@ -97,7 +99,7 @@ export default function Salary() {
     }
   };
 
-  const updateUser = async (id, salary, hours, payrollType) => {
+  const updateUser = async (id, salary, hours, payrollType, user) => {
     try {
       setLoading(true);
       if (payrollType === "Hourly") {
@@ -115,15 +117,19 @@ export default function Salary() {
           payroll: payrollType,
         });
       }
-      await createTimeline("change");
-      navigate(0);
+      toast.success("Successfully changed salary!");
+      await createTimeline("change", user);
+      setTimeout(() => {
+        navigate(0);
+      }, 1000);
     } catch (error) {
+      toast.error("Unknown error: Change salary action.");
       console.error(error);
     }
     setLoading(false);
   };
 
-  const createPayroll = async (uid) => {
+  const createPayroll = async (uid, user) => {
     try {
       setLoading(true);
       const overtimeHours =
@@ -163,7 +169,7 @@ export default function Salary() {
         },
         { merge: true }
       );
-      await createTimeline("createPayroll");
+      await createTimeline("createPayroll", user);
       navigate(0);
     } catch (error) {
       console.error(error);
@@ -229,19 +235,22 @@ export default function Salary() {
 
   return (
     <div className="overview-container">
-      <Table striped bordered hover size="lg" responsive>
+      <ToastContainer />
+      <Table size="lg" responsive className="hrm-table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>E-mail</th>
-            <th>Payroll type</th>
-            <th>Fixed salary / Salary/h</th>
-            <th>Hours/day</th>
-            <th>Total per day</th>
-            <th>Estimated Total Monthly</th>
-            <th>Next payroll</th>
+            <th className="header-cell">#</th>
+            <th className="header-cell">First Name</th>
+            <th className="header-cell">Last Name</th>
+            <th className="header-cell">E-mail</th>
+            <th className="header-cell">Payroll type</th>
+            <th className="header-cell">
+              <span className="fixed-salary-text">Fixed salary</span> / Salary/h
+            </th>
+            <th className="header-cell">Hours/day</th>
+            <th className="header-cell">Total per day</th>
+            <th className="header-cell">Estimated Total Monthly</th>
+            <th className="header-cell">Next payroll</th>
             {admin && <th>Edit</th>}
           </tr>
         </thead>
@@ -255,15 +264,23 @@ export default function Salary() {
                 <td>{user.email}</td>
                 <td>{user.payroll}</td>
                 <td style={{ textAlign: "center" }}>
-                  {user.payroll === "Fixed"
-                    ? user.salary + "$"
-                    : user.salary + "$/h"}
+                  {user.payroll === "Fixed" ? (
+                    <span style={{ color: "rgb(70, 144, 255)" }}>
+                      {user.salary + "$"}
+                    </span>
+                  ) : (
+                    user.salary + "$/h"
+                  )}
                 </td>
                 <td style={{ textAlign: "center" }}>{user.hours}</td>
                 <td style={{ textAlign: "center" }}>
-                  {user.payroll === "Fixed"
-                    ? "~" + parseInt(user.salary / 23) + "$"
-                    : user.salary * user.hours + "$"}
+                  {user.payroll === "Fixed" ? (
+                    <span style={{ color: "rgb(70, 144, 255)" }}>
+                      {"~" + parseInt(user.salary / 23) + "$"}
+                    </span>
+                  ) : (
+                    user.salary * user.hours + "$"
+                  )}
                 </td>
                 <td style={{ textAlign: "center" }}>
                   {" "}
@@ -275,7 +292,7 @@ export default function Salary() {
                 <td>
                   <Payroll
                     uid={user.id}
-                    user={user.firstname}
+                    user={user}
                     createTimeline={createTimeline}
                   ></Payroll>
                 </td>
@@ -288,8 +305,9 @@ export default function Salary() {
                           handleShow();
                           setModalData(user);
                         }}
+                        style={{ width: "100%" }} // Set a fixed width for the button
                       >
-                        Change
+                        Change Salary
                       </Button>
                     </div>
                     <div>
@@ -300,8 +318,9 @@ export default function Salary() {
                           handleShowPayroll();
                           setModalData(user);
                         }}
+                        style={{ width: "100%" }} // Set a fixed width for the button
                       >
-                        Change Payroll
+                        Create Payroll
                       </Button>
                     </div>
                   </td>
@@ -323,6 +342,7 @@ export default function Salary() {
                 <Form.Label>Last name</Form.Label>
                 <Form.Control disabled defaultValue={modalData.lastname} />
                 <Form.Select
+                  style={{ marginTop: "20px", marginBottom: "10px" }}
                   ref={payrollTypeRef}
                   onChange={() => {
                     setShowSalaryInput(payrollTypeRef.current.value);
@@ -341,7 +361,7 @@ export default function Salary() {
                       autoFocus
                       ref={userSalaryRef}
                     />
-                    <Form.Label>Hours</Form.Label>
+                    <Form.Label>Hours per day</Form.Label>
                     <Form.Control
                       defaultValue={modalData.hours}
                       ref={userHoursRef}
@@ -381,7 +401,13 @@ export default function Salary() {
                       ? userHoursRef.current.value
                       : "";
                   const payrollType = payrollTypeRef.current.value;
-                  await updateUser(id, salary, hours, payrollType);
+                  await updateUser(
+                    id,
+                    salary,
+                    hours,
+                    payrollType,
+                    modalData.firstname + " " + modalData.lastname
+                  );
                 }}
               >
                 Save Changes
@@ -486,7 +512,12 @@ export default function Salary() {
               <Button
                 disabled={loading}
                 variant="primary"
-                onClick={() => createPayroll(modalData.id)}
+                onClick={() =>
+                  createPayroll(
+                    modalData.id,
+                    modalData.firstname + " " + modalData.lastname
+                  )
+                }
               >
                 Submit Payroll
               </Button>

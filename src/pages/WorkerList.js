@@ -36,6 +36,10 @@ export default function WorkerList() {
             payrollActive: data.payrollActive,
             address: data.address,
             profilePic: data.profilePic,
+            phone_number: data.phone_number,
+            preferred_language: data.preferred_language,
+            employment_start: data.employment_start,
+            communication_preference: data.communication_preference,
           },
         ]);
       });
@@ -46,20 +50,35 @@ export default function WorkerList() {
   }, [currentFirm]);
   return (
     <>
-      <Table responsive>
+      <Table responsive className="hrm-table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>E-mail</th>
-            <th>Gender</th>
-            <th>Nationality</th>
-            <th>Education</th>
-            <th>Address</th>
+            <th className="header-cell">#</th>
+            <th className="header-cell">Name</th>
+            <th className="header-cell">E-mail</th>
+            <th className="header-cell">Gender</th>
+            <th className="header-cell">Nationality</th>
+            <th className="header-cell">Education</th>
+            <th className="header-cell">Address</th>
+            <th className="header-cell">Phone number</th>
+            <th className="header-cell">Employment start date</th>
+            <th className="header-cell">Preferred language</th>
+            <th className="header-cell">Communication preference</th>
           </tr>
         </thead>
         <tbody>
           {users.map((user, i) => {
+            const options = {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            };
+            const employmentStartDate = new Date(user.employment_start);
+            const formattedStartDate = employmentStartDate.toLocaleDateString(
+              "en-GB",
+              options
+            );
+
             return (
               <tr key={i}>
                 <td>
@@ -81,6 +100,10 @@ export default function WorkerList() {
                 <td>{user.nationality}</td>
                 <td>{user.education}</td>
                 <td>{user.address}</td>
+                <td>{user.phone_number}</td>
+                <td>{user.employment_start ? formattedStartDate : ""}</td>
+                <td>{user.preferred_language}</td>
+                <td>{user.communication_preference}</td>
               </tr>
             );
           })}

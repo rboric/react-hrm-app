@@ -26,8 +26,7 @@ export default function Payroll({ uid, user, createTimeline }) {
   const formattedDate = currentDate.toLocaleDateString("en-GB", options);
 
   const handleShow = () => setShow(!show);
-
-  const submitPayroll = async (id) => {
+  const submitPayroll = async (id, user) => {
     try {
       setLoading(true);
       await setDoc(
@@ -45,7 +44,7 @@ export default function Payroll({ uid, user, createTimeline }) {
         },
         { merge: true }
       );
-      await createTimeline("submittedPayroll");
+      await createTimeline("submittedPayroll", user);
       navigate(0);
     } catch (e) {
       console.log(e);
@@ -53,7 +52,7 @@ export default function Payroll({ uid, user, createTimeline }) {
     setLoading(false);
   };
 
-  const deletePayroll = async (id) => {
+  const deletePayroll = async (id, user) => {
     try {
       setLoading(true);
       await deleteDoc(doc(db, "payroll", id));
@@ -64,7 +63,7 @@ export default function Payroll({ uid, user, createTimeline }) {
         },
         { merge: true }
       );
-      await createTimeline("deletePayroll");
+      await createTimeline("deletePayroll", user);
       navigate(0);
     } catch (e) {
       console.log(e);
@@ -124,7 +123,9 @@ export default function Payroll({ uid, user, createTimeline }) {
       )}
       <Modal show={show} onHide={handleShow} animation={false}>
         <Modal.Header closeButton>
-          <Modal.Title>{"Payroll information for " + user}</Modal.Title>
+          <Modal.Title>
+            {"Payroll information for " + user.firstname + " " + user.lastname}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -171,7 +172,7 @@ export default function Payroll({ uid, user, createTimeline }) {
             disabled={loading}
             variant="danger"
             onClick={() => {
-              deletePayroll(modalData.id);
+              deletePayroll(modalData.id, user.firstname + " " + user.lastname);
             }}
           >
             Delete payroll
@@ -186,7 +187,7 @@ export default function Payroll({ uid, user, createTimeline }) {
             className="ml-2"
             disabled={loading || formattedDate !== modalData.date}
             onClick={() => {
-              submitPayroll(modalData.id);
+              submitPayroll(modalData.id, user.firstname + " " + user.lastname);
             }}
           >
             Submit Payroll
