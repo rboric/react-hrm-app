@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 export default function SignupAdmin() {
   const firmNameRef = useRef();
+  const emailRef = useRef();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const randomNumber = Math.floor(Math.random() * 1000001);
@@ -19,7 +20,14 @@ export default function SignupAdmin() {
       firmname: firmNameRef.current.value,
       id: randomNumber,
     });
-
+    await addDoc(collection(db, "mail"), {
+      to: emailRef.current.value,
+      message: {
+        subject: "Firm registering",
+        text: `This is the firm number: ${randomNumber}`,
+        html: `This is the firm number: ${randomNumber}`,
+      },
+    });
     setLoading(false);
   }
 
@@ -33,6 +41,8 @@ export default function SignupAdmin() {
             <Form.Group id="firmname">
               <Form.Label>Firm Name</Form.Label>
               <Form.Control type="firmname" ref={firmNameRef} required />
+              <Form.Label>E-mail</Form.Label>
+              <Form.Control type="email" ref={emailRef} required />
             </Form.Group>
             <Button disabled={loading} className="w-100 mt-4" type="submit">
               Register

@@ -30,7 +30,7 @@ export default function NavbarComp() {
     <Navbar collapseOnSelect expand="lg" className="navbar-container">
       <Container>
         {error && <Alert variant="danger">{error}</Alert>}
-        <Navbar.Brand href="#home">
+        <Navbar.Brand>
           <img src={require("../assets/logo.png")} alt="LOGO" height="40px" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />

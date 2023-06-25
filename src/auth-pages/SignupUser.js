@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Form, Button, Card, Alert } from "react-bootstrap";
+import { Form, Button, Card } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase";
@@ -15,7 +15,6 @@ export default function SignupUser() {
   const lastNameRef = useRef();
   const firmNumberRef = useRef();
   const { signup } = useAuth();
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [firms, setFirms] = useState([]);
@@ -85,7 +84,6 @@ export default function SignupUser() {
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up User</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group id="firstname">
               <Form.Label>First Name</Form.Label>
