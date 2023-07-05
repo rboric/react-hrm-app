@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# react-hrm-app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Abstract
 
-## Available Scripts
+The react-hrm-app is a web application developed using the React framework and Firebase as the underlying database. The objective of this application is to streamline task management within an organization while incorporating essential human resource management (HRM) functionalities. This README provides an overview of the application's features, installation instructions, and usage guidelines.
 
-In the project directory, you can run:
+## Introduction
 
-### `npm start`
+Effective task management and HRM processes are crucial for the smooth functioning of any organization. The HRM Task Management App is designed to provide a comprehensive solution that combines task management with HRM features. This application offers features such as task creation, worker management, payroll information, time off requests, and profile management.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Tasks
 
-### `npm test`
+The react-hrm-app provides a robust task management system that empowers administrators to create, assign, and track tasks within the organization. Administrators have full control over task management, including the ability to create, update, archive, and delete tasks. Basic users, referred to as workers, can actively participate by leaving comments on the tasks assigned to them.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Task creation
+Administrators have the privilege to create tasks by providing a task name and description. They can assign tasks to specific users within the organization and set the importance level of each task. By assigning users to tasks, administrators ensure clear responsibility and accountability.
 
-### `npm run build`
+### Task Update and Archiving
+Administrators can update task details such as importance level, description, and name as the project progresses or requirements change. This flexibility allows for effective task management and adaptation to evolving needs. Furthermore, administrators have the ability to archive completed or inactive tasks, maintaining a clean and organized task list.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Task Deletion
+Administrators possess the authority to delete tasks if they determine that a task is no longer relevant or necessary. Deleting a task ensures that it is permanently removed from the system and no longer visible to users.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Worker Participation
+Workers, as basic users of the app, can actively engage in task management by leaving comments on assigned tasks. This functionality fosters collaboration, encourages feedback, and facilitates effective communication within the organization. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+By offering these comprehensive task management features, the react-hrm-app empowers administrators to efficiently handle task assignment and tracking, while promoting worker engagement and communication.
 
-### `npm run eject`
+### Worker Management
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The worker management feature provides a centralized view of all workers associated with the organization. Users can access and update worker profiles, including personal information and contact details. This information is reflected in other app sections, such as the worker list and payroll information.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Payroll Information
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Admin users can submit payroll information for each worker, which is then displayed on their respective profiles. The payroll details include salary, payment frequency, and any additional compensation. This feature provides transparency and accessibility to payroll-related information for both workers and admin users.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Archived Tasks
 
-## Learn More
+The app includes a dedicated section to view archived tasks. Users can access and review completed or inactive tasks, ensuring a historical record of task management activities. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Time Off Requests
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Workers can submit time off requests through the app, specifying the desired duration and reason for the absence. Admin users can review and manage these requests, grant them or deny them. The time off tab provides an organized overview of current and past requests.
 
-### Code Splitting
+### Profile Management
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Users have access to their personal profiles, enabling them to update their information as needed. Changes made to profiles are automatically reflected in the worker list and other relevant sections. This feature empowers users to maintain accurate and up-to-date information for better collaboration and communication.
