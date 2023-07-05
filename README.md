@@ -71,3 +71,21 @@ This will launch the app in your default web browser, allowing you to interact w
 
 The react-hrm-app provides an integrated solution for task management and HRM processes. By leveraging the capabilities of React and Firebase, the application provides a user-friendly interface and a comprehensive set of essential features.
 
+## Instructions for using the react-hrm-app:
+
+### Landing Page
+
+Upon accessing the landing page of the app, you will be presented with several options: login, signup for user, signup for admin, and firm registration.
+
+### Firm Registration
+
+To begin using the app, you need to register your firm. Click on the "firm registering" option.
+Provide the name of your firm and fill in the email input.
+After completing the registration, an email will be sent to the provided email address. This email will contain a unique firm CODE that you will use during the signup process as a user or an admin.
+
+### Signup as User or Admin:
+
+Choose the appropriate signup option based on your role within the firm: user or admin.
+During the signup process, you will be prompted to enter the firm CODE received in the email after firm registration.
+Users and admins are determined at the firm level, so admin accounts are typically assigned to higher-level personnel within the company.
+These initial steps are crucial for getting started with the react-hrm-app. By following these instructions, you will successfully register your firm and create user or admin accounts based on your role within the organization.
