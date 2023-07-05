@@ -6,7 +6,7 @@ The react-hrm-app is a web application developed using the React framework and F
 
 ## Introduction
 
-Effective task management and HRM processes are crucial for the smooth functioning of any organization. The HRM Task Management App is designed to provide a comprehensive solution that combines task management with HRM features. This application offers features such as task creation, worker management, payroll information, time off requests, and profile management.
+Effective task management and HRM processes are crucial for the smooth functioning of any organization. The react-hrm-app is designed to provide a comprehensive solution that combines task management with HRM features. This application offers features such as task creation, worker management, payroll information, time off requests, and profile management.
 
 ## Features
 
