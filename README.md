@@ -94,8 +94,4 @@ These initial steps are crucial for getting started with the react-hrm-app. By f
 
 Please note that this react-hrm-app is developed as a student project and intended for educational purposes rather than real-world business use. As such, the primary focus of the application is on demonstrating HRM functionalities, and the security measures implemented in this student project are not designed to meet the high-security standards required for production-level applications.
 
-While basic authentication functionality is provided to support multiple firms and users within each firm, it is essential to recognize that the security measures in place may not be as robust as those found in professional, enterprise-grade applications.
-
-It is crucial to exercise caution and not handle sensitive or confidential information within this student project app. 
-
-This application's main objective is to showcase HRM concepts and features in a controlled academic environment, rather than to provide a fully secure and production-ready solution.
+While basic authentication functionality is provided to support multiple firms and users within each firm, keep in mind that the security measures used in this project may not be as strong as those used in professional-grade applications typically used by businesses.
