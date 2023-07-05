@@ -50,7 +50,7 @@ Users have access to their personal profiles, enabling them to update their info
 
 ## Installation
 
-To set up the HRM Task Management App locally, follow these steps:
+To set up the react-hrm-app locally, follow these steps:
 
 1. Clone the repository: `git clone <repository_url>`
 2. Navigate to the project directory: `cd react-hrm-app`
