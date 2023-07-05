@@ -12,7 +12,7 @@ Effective task management and HRM processes are crucial for the smooth functioni
 
 ### Tasks
 
-The react-hrm-app provides a robust task management system that empowers administrators to create, assign, and track tasks within the organization. Administrators have full control over task management, including the ability to create, update, archive, and delete tasks. Basic users, referred to as workers, can actively participate by leaving comments on the tasks assigned to them.
+The react-hrm-app offers a task management system that allows administrators to create, assign, and track tasks within the organization. Administrators have full control over task management, including the ability to create, update, archive, and delete tasks. Basic users, referred to as workers, can actively participate by leaving comments on the tasks assigned to them.
 
 ### Task creation
 Administrators have the privilege to create tasks by providing a task name and description. They can assign tasks to specific users within the organization and set the importance level of each task. By assigning users to tasks, administrators ensure clear responsibility and accountability.
@@ -24,17 +24,17 @@ Administrators can update task details such as importance level, description, an
 Administrators possess the authority to delete tasks if they determine that a task is no longer relevant or necessary. Deleting a task ensures that it is permanently removed from the system and no longer visible to users.
 
 ### Worker Participation
-Workers, as basic users of the app, can actively engage in task management by leaving comments on assigned tasks. This functionality fosters collaboration, encourages feedback, and facilitates effective communication within the organization. 
+Workers, as basic users of the app, can actively engage in task management by leaving comments on assigned tasks. This functionality promotes teamwork, encourages input, and helps facilitate communication within the organization.
 
-By offering these comprehensive task management features, the react-hrm-app empowers administrators to efficiently handle task assignment and tracking, while promoting worker engagement and communication.
+By offering these comprehensive task management features, the react-hrm-app helps administrators handle task assignment and tracking efficiently, while also encouraging worker engagement and communication.
 
 ### Worker Management
 
-The worker management feature provides a centralized view of all workers associated with the organization. Users can access and update worker profiles, including personal information and contact details. This information is reflected in other app sections, such as the worker list and payroll information.
+The worker management feature provides a centralized view of all workers associated with the organization. Users can access and update their profiles, including personal information and contact details. This information is reflected in other app sections, such as the worker list and payroll information.
 
 ### Payroll Information
 
-Admin users can submit payroll information for each worker, which is then displayed on their respective profiles. The payroll details include salary, payment frequency, and any additional compensation. This feature provides transparency and accessibility to payroll-related information for both workers and admin users.
+Admin users can submit payroll information for each worker, which is then displayed on their (users') respective profiles. The payroll details include salary and any additional compensation. This feature provides transparency and accessibility to payroll-related information for both workers and admin users.
 
 ### Archived Tasks
 
@@ -42,7 +42,7 @@ The app includes a dedicated section to view archived tasks. Users can access an
 
 ### Time Off Requests
 
-Workers can submit time off requests through the app, specifying the desired duration and reason for the absence. Admin users can review and manage these requests, grant them or deny them. The time off tab provides an organized overview of current and past requests.
+Workers can submit time off requests through the app, specifying the desired duration and reason for the absence. Admin users can review and manage these requests, grant them or deny them. The 'time off' tab provides an organized overview of current and past requests.
 
 ### Profile Management
 
@@ -69,7 +69,7 @@ This will launch the app in your default web browser, allowing you to interact w
 
 ## Conclusion
 
-The react-hrm-app provides an integrated solution for task management and HRM processes. By leveraging the capabilities of React and Firebase, the application provides a user-friendly interface and a comprehensive set of essential features.
+The react-hrm-app provides an integrated solution for task management and HRM processes. The application uses React and Firebase to offer a user-friendly interface and a wide range of essential features.
 
 ## Instructions for using the react-hrm-app:
 
@@ -79,7 +79,7 @@ Upon accessing the landing page of the app, you will be presented with several o
 
 ### Firm Registration
 
-To begin using the app, you need to register your firm. Click on the "firm registering" option.
+To begin using the app, you need to register your firm. Click on the "Register firm" option.
 Provide the name of your firm and fill in the email input.
 After completing the registration, an email will be sent to the provided email address. This email will contain a unique firm CODE that you will use during the signup process as a user or an admin.
 
