@@ -1,6 +1,6 @@
 # react-hrm-app
 
-[https://react-hrm-app.netlify.app/] (https://react-hrm-app.netlify.app/)
+https://react-hrm-app.netlify.app/
 
 ## Abstract
 
