@@ -61,7 +61,7 @@ To set up the HRM Task Management App locally, follow these steps:
 
 ## Usage
 
-To start the development server and run the HRM Task Management App, execute the following command:
+To start the development server and run the react-hrm-app, execute the following command:
 
 `npm start`
 
